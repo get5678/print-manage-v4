@@ -14,6 +14,13 @@ export interface UserLayoutProps extends ConnectProps {
   breadcrumbNameMap: { [path: string]: MenuDataItem };
 }
 
+const myLinks = [{
+  key: 'Ant Design Pro',
+  title: 'Ant Design Pro',
+  href: 'https://pro.ant.design',
+  blankTarget: true
+}];
+
 const UserLayout: React.SFC<UserLayoutProps> = props => {
   const {
     route = {
@@ -47,14 +54,16 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
             <div className={styles.header}>
               <Link to="/">
                 <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>Ant Design</span>
+                <span className={styles.title}>云印峰</span>
               </Link>
             </div>
-            <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+            <div className={styles.desc}>云印峰商户管理平台</div>
           </div>
           {children}
         </div>
-        <DefaultFooter />
+        <DefaultFooter 
+        links={myLinks}
+        copyright='勤奋峰前端组出品'/>
       </div>
     </DocumentTitle>
   );

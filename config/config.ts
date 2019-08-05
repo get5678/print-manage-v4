@@ -121,6 +121,12 @@ export default {
           authority: ['admin', 'user'],
           routes: [
             {
+              path: '/',
+              icon: 'smile',
+              name: 'welcome',
+              component: './Welcome',
+            },
+            {
               path: '/dashboard',
               name: 'dashboard',
               icon: 'dashboard',
@@ -143,175 +149,188 @@ export default {
               ],
             },
             {
-              path: '/form',
-              icon: 'form',
-              name: 'form',
-              routes: [
-                {
-                  name: 'basic-form',
-                  path: '/form/basic-form',
-                  component: './form/basic-form',
-                },
-                {
-                  name: 'step-form',
-                  path: '/form/step-form',
-                  component: './form/step-form',
-                },
-                {
-                  name: 'advanced-form',
-                  path: '/form/advanced-form',
-                  component: './form/advanced-form',
-                },
-              ],
-            },
-            {
-              path: '/list',
+              path: '/order',
               icon: 'table',
-              name: 'list',
-              routes: [
-                {
-                  path: '/list/search',
-                  name: 'search-list',
-                  component: './list/search',
-                  routes: [
-                    {
-                      path: '/list/search',
-                      redirect: '/list/search/articles',
-                    },
-                    {
-                      name: 'articles',
-                      path: '/list/search/articles',
-                      component: './list/search/articles',
-                    },
-                    {
-                      name: 'projects',
-                      path: '/list/search/projects',
-                      component: './list/search/projects',
-                    },
-                    {
-                      name: 'applications',
-                      path: '/list/search/applications',
-                      component: './list/search/applications',
-                    },
-                  ],
-                },
-                {
-                  name: 'table-list',
-                  path: '/list/table-list',
-                  component: './list/table-list',
-                },
-                {
-                  name: 'basic-list',
-                  path: '/list/basic-list',
-                  component: './list/basic-list',
-                },
-                {
-                  name: 'card-list',
-                  path: '/list/card-list',
-                  component: './list/card-list',
-                },
-              ],
+              name: 'order',
+              component: './order/table-list'
             },
             {
-              path: '/profile',
-              name: 'profile',
-              icon: 'profile',
-              routes: [
-                {
-                  name: 'basic',
-                  path: '/profile/basic',
-                  component: './profile/basic',
-                },
-                {
-                  name: 'advanced',
-                  path: '/profile/advanced',
-                  component: './profile/advanced',
-                },
-              ],
+              path: '/types',
+              icon: 'table',
+              name: 'types',
+              component: './types/basic-list'
             },
             {
-              name: 'result',
-              icon: 'check-circle-o',
-              path: '/result',
-              routes: [
-                {
-                  name: 'success',
-                  path: '/result/success',
-                  component: './result/success',
-                },
-                {
-                  name: 'fail',
-                  path: '/result/fail',
-                  component: './result/fail',
-                },
-              ],
-            },
-            {
-              name: 'exception',
-              icon: 'warning',
-              path: '/exception',
-              routes: [
-                {
-                  name: '403',
-                  path: '/exception/403',
-                  component: './exception/403',
-                },
-                {
-                  name: '404',
-                  path: '/exception/404',
-                  component: './exception/404',
-                },
-                {
-                  name: '500',
-                  path: '/exception/500',
-                  component: './exception/500',
-                },
-              ],
+              path: '/feedback',
+              icon: 'table',
+              name: 'feedback',
+              component: './feedback/table-list'
             },
             {
               name: 'account',
               icon: 'user',
-              path: '/account',
+              path: '/merchants',
               routes: [
                 {
                   name: 'center',
-                  path: '/account/center',
-                  component: './account/center',
+                  path: '/merchants/center',
+                  component: './merchants/center',
                 },
                 {
                   name: 'settings',
-                  path: '/account/settings',
-                  component: './account/settings',
+                  path: '/merchants/settings',
+                  component: './merchants/settings',
                 },
               ],
             },
-            {
-              name: 'editor',
-              icon: 'highlight',
-              path: '/editor',
-              routes: [
-                {
-                  name: 'flow',
-                  path: '/editor/flow',
-                  component: './editor/flow',
-                },
-                {
-                  name: 'mind',
-                  path: '/editor/mind',
-                  component: './editor/mind',
-                },
-                {
-                  name: 'koni',
-                  path: '/editor/koni',
-                  component: './editor/koni',
-                },
-              ],
-            },
-            {
-              path: '/',
-              redirect: '/dashboard/analysis',
-              authority: ['admin', 'user'],
-            },
+            // {
+            //   path: '/form',
+            //   icon: 'form',
+            //   name: 'form',
+            //   routes: [
+            //     {
+            //       name: 'basic-form',
+            //       path: '/form/basic-form',
+            //       component: './form/basic-form',
+            //     },
+            //     {
+            //       name: 'step-form',
+            //       path: '/form/step-form',
+            //       component: './form/step-form',
+            //     },
+            //     {
+            //       name: 'advanced-form',
+            //       path: '/form/advanced-form',
+            //       component: './form/advanced-form',
+            //     },
+            //   ],
+            // },
+            // {
+            //   path: '/list',
+            //   icon: 'table',
+            //   name: 'list',
+            //   routes: [
+            //     {
+            //       path: '/list/search',
+            //       name: 'search-list',
+            //       component: './list/search',
+            //       routes: [
+            //         {
+            //           path: '/list/search',
+            //           redirect: '/list/search/articles',
+            //         },
+            //         {
+            //           name: 'articles',
+            //           path: '/list/search/articles',
+            //           component: './list/search/articles',
+            //         },
+            //         {
+            //           name: 'projects',
+            //           path: '/list/search/projects',
+            //           component: './list/search/projects',
+            //         },
+            //         {
+            //           name: 'applications',
+            //           path: '/list/search/applications',
+            //           component: './list/search/applications',
+            //         },
+            //       ],
+            //     },
+            //     {
+            //       name: 'table-list',
+            //       path: '/list/table-list',
+            //       component: './list/table-list',
+            //     },
+            //     {
+            //       name: 'basic-list',
+            //       path: '/list/basic-list',
+            //       component: './list/basic-list',
+            //     },
+            //     {
+            //       name: 'card-list',
+            //       path: '/list/card-list',
+            //       component: './list/card-list',
+            //     },
+            //   ],
+            // },
+            // {
+            //   path: '/profile',
+            //   name: 'profile',
+            //   icon: 'profile',
+            //   routes: [
+            //     {
+            //       name: 'basic',
+            //       path: '/profile/basic',
+            //       component: './profile/basic',
+            //     },
+            //     {
+            //       name: 'advanced',
+            //       path: '/profile/advanced',
+            //       component: './profile/advanced',
+            //     },
+            //   ],
+            // },
+            // {
+            //   name: 'result',
+            //   icon: 'check-circle-o',
+            //   path: '/result',
+            //   routes: [
+            //     {
+            //       name: 'success',
+            //       path: '/result/success',
+            //       component: './result/success',
+            //     },
+            //     {
+            //       name: 'fail',
+            //       path: '/result/fail',
+            //       component: './result/fail',
+            //     },
+            //   ],
+            // },
+            // {
+            //   name: 'exception',
+            //   icon: 'warning',
+            //   path: '/exception',
+            //   routes: [
+            //     {
+            //       name: '403',
+            //       path: '/exception/403',
+            //       component: './exception/403',
+            //     },
+            //     {
+            //       name: '404',
+            //       path: '/exception/404',
+            //       component: './exception/404',
+            //     },
+            //     {
+            //       name: '500',
+            //       path: '/exception/500',
+            //       component: './exception/500',
+            //     },
+            //   ],
+            // },
+            // {
+            //   name: 'editor',
+            //   icon: 'highlight',
+            //   path: '/editor',
+            //   routes: [
+            //     {
+            //       name: 'flow',
+            //       path: '/editor/flow',
+            //       component: './editor/flow',
+            //     },
+            //     {
+            //       name: 'mind',
+            //       path: '/editor/mind',
+            //       component: './editor/mind',
+            //     },
+            //     {
+            //       name: 'koni',
+            //       path: '/editor/koni',
+            //       component: './editor/koni',
+            //     },
+            //   ],
+            // },
             {
               component: '404',
             },

@@ -8,6 +8,7 @@ import ProLayout, {
   BasicLayoutProps as ProLayoutProps,
   Settings,
   SettingDrawer,
+  DefaultFooter
 } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
@@ -16,7 +17,7 @@ import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState, Dispatch } from '@/models/connect';
-import { isAntDesignPro } from '@/utils/utils';
+// import { isAntDesignPro } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
@@ -41,29 +42,43 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
   });
 
 const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
-  if (!isAntDesignPro()) {
-    return defaultDom;
-  }
+  const myLinks = [{
+    key: 'Ant Design Pro',
+    title: 'Ant Design Pro',
+    href: 'https://pro.ant.design',
+    blankTarget: true
+  }];
 
   return (
     <>
-      {defaultDom}
-      <div
-        style={{
-          padding: '0px 24px 24px',
-          textAlign: 'center',
-        }}
-      >
-        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
-            width="82px"
-            alt="netlify logo"
-          />
-        </a>
-      </div>
+    <DefaultFooter 
+    links={myLinks}
+    copyright='勤奋峰前端部门出品'/>
     </>
-  );
+  )
+  // if (!isAntDesignPro()) {
+  //   return defaultDom;
+  // }
+
+  // return (
+  //   <>
+  //     {defaultDom}
+  //     <div
+  //       style={{
+  //         padding: '0px 24px 24px',
+  //         textAlign: 'center',
+  //       }}
+  //     >
+  //       <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
+  //         <img
+  //           src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
+  //           width="82px"
+  //           alt="netlify logo"
+  //         />
+  //       </a>
+  //     </div>
+  //   </>
+  // );
 };
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
