@@ -4,7 +4,7 @@ import React, { Component, Fragment } from 'react';
 
 import { FormComponentProps } from 'antd/es/form';
 import { connect } from 'dva';
-import { CurrentUser } from '../data';
+import { CurrentUser } from '../data.d';
 // import GeographicView from './GeographicView';
 // import PhoneView from './PhoneView';
 import styles from './BaseView.less';
@@ -68,8 +68,8 @@ interface BaseViewProps extends FormComponentProps {
   currentUser?: CurrentUser;
 }
 
-@connect(({ accountSettings }: { accountSettings: { currentUser: CurrentUser } }) => ({
-  currentUser: accountSettings.currentUser,
+@connect(({ accountCenter }: { accountCenter: { currentUser: CurrentUser } }) => ({
+  currentUser: accountCenter.currentUser,
 }))
 class BaseView extends Component<BaseViewProps> {
   view: HTMLDivElement | undefined = undefined;

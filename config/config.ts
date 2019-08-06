@@ -167,21 +167,10 @@ export default {
               component: './feedback/table-list'
             },
             {
-              name: 'account',
-              icon: 'user',
               path: '/merchants',
-              routes: [
-                {
-                  name: 'center',
-                  path: '/merchants/center',
-                  component: './merchants/center',
-                },
-                {
-                  name: 'settings',
-                  path: '/merchants/settings',
-                  component: './merchants/settings',
-                },
-              ],
+              icon: 'user',
+              name: 'account',
+              component: './merchants/center',
             },
             // {
             //   path: '/form',

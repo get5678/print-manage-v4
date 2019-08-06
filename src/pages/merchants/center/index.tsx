@@ -1,4 +1,4 @@
-import { Card, Col, Divider, Icon, Input, Row, Tag } from 'antd';
+import { Card, Col, Divider, Input, Row } from 'antd';
 import React, { PureComponent } from 'react';
 
 import { Dispatch } from 'redux';
@@ -7,7 +7,7 @@ import { RouteChildrenProps } from 'react-router';
 import { connect } from 'dva';
 import BaseView from './components/base';
 import { ModalState } from './model';
-import { CurrentUser, TagType } from './data.d';
+import { CurrentUser } from './data.d';
 import styles from './Center.less';
 
 interface CenterProps extends RouteChildrenProps {
@@ -16,8 +16,6 @@ interface CenterProps extends RouteChildrenProps {
   currentUserLoading: boolean;
 }
 interface CenterState {
-  newTags: TagType[];
-  tabKey: 'articles' | 'applications' | 'projects';
   inputVisible: boolean;
   inputValue: string;
 }
@@ -38,29 +36,10 @@ class Center extends PureComponent<
   CenterProps,
   CenterState
 > {
-  // static getDerivedStateFromProps(
-  //   props: accountCenterProps,
-  //   state: accountCenterState,
-  // ) {
-  //   const { match, location } = props;
-  //   const { tabKey } = state;
-  //   const path = match && match.path;
-
-  //   const urlTabKey = location.pathname.replace(`${path}/`, '');
-  //   if (urlTabKey && urlTabKey !== '/' && tabKey !== urlTabKey) {
-  //     return {
-  //       tabKey: urlTabKey,
-  //     };
-  //   }
-
-  //   return null;
-  // }
 
   state: CenterState = {
-    newTags: [],
     inputVisible: false,
     inputValue: '',
-    tabKey: 'articles',
   };
 
   public input: Input | null | undefined = undefined;
@@ -75,15 +54,6 @@ class Center extends PureComponent<
     });
   }
 
-  onTabChange = (key: string) => {
-    // If you need to sync state to url
-    // const { match } = this.props;
-    // router.push(`${match.url}/${key}`);
-    this.setState({
-      tabKey: key as CenterState['tabKey'],
-    });
-  };
-
   showInput = () => {
     this.setState({ inputVisible: true }, () => this.input && this.input.focus());
   };
@@ -96,22 +66,7 @@ class Center extends PureComponent<
     this.setState({ inputValue: e.target.value });
   };
 
-  handleInputConfirm = () => {
-    const { state } = this;
-    const { inputValue } = state;
-    let { newTags } = state;
-    if (inputValue && newTags.filter(tag => tag.label === inputValue).length === 0) {
-      newTags = [...newTags, { key: `new-${newTags.length}`, label: inputValue }];
-    }
-    this.setState({
-      newTags,
-      inputVisible: false,
-      inputValue: '',
-    });
-  };
-
   render() {
-    const { newTags, inputVisible, inputValue } = this.state;
     const { currentUser, currentUserLoading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
     return (
@@ -143,30 +98,7 @@ class Center extends PureComponent<
                   </div>
                   <Divider dashed />
                   <div className={styles.tags}>
-                    <div className={styles.tagsTitle}>标签</div>
-                    {currentUser.tags.concat(newTags).map(item => (
-                      <Tag key={item.key}>{item.label}</Tag>
-                    ))}
-                    {inputVisible && (
-                      <Input
-                        ref={ref => this.saveInputRef(ref)}
-                        type="text"
-                        size="small"
-                        style={{ width: 78 }}
-                        value={inputValue}
-                        onChange={this.handleInputChange}
-                        onBlur={this.handleInputConfirm}
-                        onPressEnter={this.handleInputConfirm}
-                      />
-                    )}
-                    {!inputVisible && (
-                      <Tag
-                        onClick={this.showInput}
-                        style={{ background: '#fff', borderStyle: 'dashed' }}
-                      >
-                        <Icon type="plus" />
-                      </Tag>
-                    )}
+                    
                   </div>
                   <Divider style={{ marginTop: 16 }} dashed />
                 </div>

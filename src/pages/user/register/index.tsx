@@ -53,6 +53,7 @@ interface RegisterState {
   visible: boolean;
   help: string;
   prefix: string;
+  invite: string;
 }
 
 export interface UserRegisterParams {
@@ -62,6 +63,7 @@ export interface UserRegisterParams {
   mobile: string;
   captcha: string;
   prefix: string;
+  invite: string;
 }
 
 @connect(
@@ -90,6 +92,7 @@ class Register extends Component<
     visible: false,
     help: '',
     prefix: '86',
+    invite: ''
   };
 
   interval: number | undefined = undefined;
@@ -225,23 +228,34 @@ class Register extends Component<
         </h3>
         <Form onSubmit={this.handleSubmit}>
           <FormItem>
-            {getFieldDecorator('mail', {
-              rules: [
-                {
-                  required: true,
-                  message: formatMessage({ id: 'user-register.email.required' }),
-                },
-                {
-                  type: 'email',
-                  message: formatMessage({ id: 'user-register.email.wrong-format' }),
-                },
-              ],
-            })(
-              <Input
+            <InputGroup compact>
+              <Select
                 size="large"
-                placeholder={formatMessage({ id: 'user-register.email.placeholder' })}
-              />,
-            )}
+                value={prefix}
+                onChange={this.changePrefix}
+                style={{ width: '25%' }}
+              >
+                <Option value="86">+86</Option>
+              </Select>
+              {getFieldDecorator('mobile', {
+                rules: [
+                  {
+                    required: true,
+                    message: formatMessage({ id: 'user-register.phone-number.required' }),
+                  },
+                  {
+                    pattern: /^\d{11}$/,
+                    message: formatMessage({ id: 'user-register.phone-number.wrong-format' }),
+                  },
+                ],
+              })(
+                <Input
+                  size="large"
+                  style={{ width: '75%' }}
+                  placeholder={formatMessage({ id: 'user-register.phone-number.placeholder' })}
+                />,
+              )}
+            </InputGroup>
           </FormItem>
           <FormItem help={help}>
             <Popover
@@ -299,35 +313,19 @@ class Register extends Component<
             )}
           </FormItem>
           <FormItem>
-            <InputGroup compact>
-              <Select
+            {getFieldDecorator('invite', {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入注册码',
+                }
+              ],
+            })(
+              <Input
                 size="large"
-                value={prefix}
-                onChange={this.changePrefix}
-                style={{ width: '20%' }}
-              >
-                <Option value="86">+86</Option>
-                <Option value="87">+87</Option>
-              </Select>
-              {getFieldDecorator('mobile', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'user-register.phone-number.required' }),
-                  },
-                  {
-                    pattern: /^\d{11}$/,
-                    message: formatMessage({ id: 'user-register.phone-number.wrong-format' }),
-                  },
-                ],
-              })(
-                <Input
-                  size="large"
-                  style={{ width: '80%' }}
-                  placeholder={formatMessage({ id: 'user-register.phone-number.placeholder' })}
-                />,
-              )}
-            </InputGroup>
+                placeholder='注册码，请联系管理员获得'
+              />,
+            )}
           </FormItem>
           <FormItem>
             <Row gutter={8}>
