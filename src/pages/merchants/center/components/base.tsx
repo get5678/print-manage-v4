@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select, Upload, message } from 'antd';
+import { Button, Form, Input, Upload, message } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component, Fragment } from 'react';
 
@@ -10,7 +10,7 @@ import { CurrentUser } from '../data.d';
 import styles from './BaseView.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
+// const { Option } = Select;
 
 // 头像组件 方便以后独立，增加裁剪之类的功能
 const AvatarView = ({ avatar }: { avatar: string }) => (
@@ -30,39 +30,6 @@ const AvatarView = ({ avatar }: { avatar: string }) => (
     </Upload>
   </Fragment>
 );
-// interface SelectItem {
-//   label: string;
-//   key: string;
-// }
-
-// const validatorGeographic = (
-//   _: any,
-//   value: {
-//     province: SelectItem;
-//     city: SelectItem;
-//   },
-//   callback: (message?: string) => void,
-// ) => {
-//   const { province, city } = value;
-//   if (!province.key) {
-//     callback('Please input your province!');
-//   }
-//   if (!city.key) {
-//     callback('Please input your city!');
-//   }
-//   callback();
-// };
-
-// const validatorPhone = (rule: any, value: string, callback: (message?: string) => void) => {
-//   const values = value.split('-');
-//   if (!values[0]) {
-//     callback('Please input your area code!');
-//   }
-//   if (!values[1]) {
-//     callback('Please input your phone number!');
-//   }
-//   callback();
-// };
 
 interface BaseViewProps extends FormComponentProps {
   currentUser?: CurrentUser;
@@ -95,7 +62,7 @@ class BaseView extends Component<BaseViewProps> {
       if (currentUser.avatar) {
         return currentUser.avatar;
       }
-      const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
+      const url = 'http://square2.oss-cn-shanghai.aliyuncs.com/2019-08-06-%E5%9B%BE%E5%B1%82%201.png';
       return url;
     }
     return '';
@@ -123,89 +90,45 @@ class BaseView extends Component<BaseViewProps> {
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
           <Form layout="vertical" hideRequiredMark>
-            <FormItem label={formatMessage({ id: 'account-settings.basic.email' })}>
-              {getFieldDecorator('email', {
+            {/* <FormItem label='手机'>
+              {getFieldDecorator('mobile', {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: 'account-settings.basic.email-message' }, {}),
+                    message: '请输入手机号',
+                  },
+                  {
+                    pattern: /^\d{11}$/,
+                    message: '手机号格式错误',
                   },
                 ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'account-settings.basic.nickname' })}>
+              })(
+                <Input 
+                maxLength={11}/>,
+              )}
+            </FormItem> */}
+            <FormItem label='商店名'>
               {getFieldDecorator('name', {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: 'account-settings.basic.nickname-message' }, {}),
+                    message: '请输入你的商店名',
                   },
                 ],
-              })(<Input />)}
+              })(<Input 
+              maxLength={30}/>)}
             </FormItem>
-            <FormItem label={formatMessage({ id: 'account-settings.basic.profile' })}>
-              {getFieldDecorator('profile', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'account-settings.basic.profile-message' }, {}),
-                  },
-                ],
-              })(
-                <Input.TextArea
-                  placeholder={formatMessage({ id: 'account-settings.basic.profile-placeholder' })}
-                  rows={4}
-                />,
-              )}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'account-settings.basic.country' })}>
-              {getFieldDecorator('country', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'account-settings.basic.country-message' }, {}),
-                  },
-                ],
-              })(
-                <Select style={{ maxWidth: 220 }}>
-                  <Option value="China">中国</Option>
-                </Select>,
-              )}
-            </FormItem>
-            {/* <FormItem label={formatMessage({ id: 'account-settings.basic.geographic' })}>
-              {getFieldDecorator('geographic', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'account-settings.basic.geographic-message' }, {}),
-                  },
-                  {
-                    validator: validatorGeographic,
-                  },
-                ],
-              })(<GeographicView />)}
-            </FormItem> */}
-            <FormItem label={formatMessage({ id: 'account-settings.basic.address' })}>
+            <FormItem label='地址'>
               {getFieldDecorator('address', {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: 'account-settings.basic.address-message' }, {}),
+                    message: '请输入你的地址',
                   },
                 ],
-              })(<Input />)}
+              })(<Input 
+              maxLength={60}/>)}
             </FormItem>
-            {/* <FormItem label={formatMessage({ id: 'account-settings.basic.phone' })}>
-              {getFieldDecorator('phone', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'account-settings.basic.phone-message' }, {}),
-                  },
-                  { validator: validatorPhone },
-                ],
-              })(<PhoneView />)}
-            </FormItem> */}
             <Button type="primary" onClick={this.handlerSubmit}>
               <FormattedMessage id="account-settings.basic.update" defaultMessage="Update Information" />
             </Button>

@@ -115,7 +115,7 @@ export default {
   // 支持值为 Object 和 Array
   'GET  /api/merchants': {
     name: '勤奋峰打印',
-    avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+    avatar: 'http://square2.oss-cn-shanghai.aliyuncs.com/2019-08-06-%E5%9B%BE%E5%B1%82%201.png',
     userid: '00000001',
     email: 'antdesign@alipay.com',
     signature: '教师公寓',

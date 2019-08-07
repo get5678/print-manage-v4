@@ -1,4 +1,4 @@
-import { Card, Col, Divider, Input, Row } from 'antd';
+import { Card, Col, Divider, Input, Row, Icon, Button } from 'antd';
 import React, { PureComponent } from 'react';
 
 import { Dispatch } from 'redux';
@@ -7,6 +7,7 @@ import { RouteChildrenProps } from 'react-router';
 import { connect } from 'dva';
 import BaseView from './components/base';
 import { ModalState } from './model';
+import router from 'umi/router';
 import { CurrentUser } from './data.d';
 import styles from './Center.less';
 
@@ -42,6 +43,15 @@ class Center extends PureComponent<
     inputValue: '',
   };
 
+  /**
+   * @description 跳转商品页
+   * @memberof Center
+   */
+  handlerSubmit = (event: React.MouseEvent) => {
+    event.preventDefault();
+    router.push(`/types`);
+  };
+
   public input: Input | null | undefined = undefined;
 
   componentDidMount() {
@@ -53,18 +63,6 @@ class Center extends PureComponent<
       type: 'accountCenter/fetch',
     });
   }
-
-  showInput = () => {
-    this.setState({ inputVisible: true }, () => this.input && this.input.focus());
-  };
-
-  saveInputRef = (input: Input | null) => {
-    this.input = input;
-  };
-
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ inputValue: e.target.value });
-  };
 
   render() {
     const { currentUser, currentUserLoading } = this.props;
@@ -79,28 +77,27 @@ class Center extends PureComponent<
                   <div className={styles.avatarHolder}>
                     <img alt="" src={currentUser.avatar} />
                     <div className={styles.name}>{currentUser.name}</div>
-                    <div>{currentUser.signature}</div>
+                    <div>18048916710</div>
                   </div>
                   <div className={styles.detail}>
                     <p>
-                      <i className={styles.title} />
-                      {currentUser.title}
-                    </p>
-                    <p>
-                      <i className={styles.group} />
-                      {currentUser.group}
-                    </p>
-                    <p>
-                      <i className={styles.address} />
-                      {currentUser.geographic.province.label}
-                      {currentUser.geographic.city.label}
+                      <Icon type="home" theme="filled" />
+                      教师公寓
                     </p>
                   </div>
                   <Divider dashed />
-                  <div className={styles.tags}>
-                    
+                  <div className={styles.goods}>
+                    <p>
+                      <span>黑白单面A4</span>
+                      <span>0.2 元/张</span>
+                    </p>
+                    <p>
+                      <span>黑白双面A4</span>
+                      <span>0.2 元/张</span>
+                    </p>
                   </div>
-                  <Divider style={{ marginTop: 16 }} dashed />
+                  <Button type="primary" onClick={this.handlerSubmit}>跳转修改商品</Button>
+                  <Divider dashed />
                 </div>
               ) : null}
             </Card>
