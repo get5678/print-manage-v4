@@ -1,11 +1,14 @@
 import { AnyAction, Reducer } from 'redux';
+import { message } from 'antd'
 
 import { EffectsCommandMap } from 'dva';
-import { fakeRegister } from './service';
+// import { fakeRegister } from './service';
+import { sendAuthCode, register, login } from '@/services/api';
 
 export interface StateType {
-  status?: 'ok' | 'error';
+  status?: number;
   currentAuthority?: 'user' | 'guest' | 'admin';
+  msg?: string;
 }
 
 export type Effect = (
@@ -17,10 +20,13 @@ export interface ModelType {
   namespace: string;
   state: StateType;
   effects: {
-    submit: Effect;
+    // submit: Effect;
+    sendAuthCode: Effect;
+    register: Effect;
   };
   reducers: {
     registerHandle: Reducer<StateType>;
+    clearStatus: Reducer<any>;
   };
 }
 
@@ -32,22 +38,47 @@ const Model: ModelType = {
   },
 
   effects: {
-    *submit({ payload }, { call, put }) {
-      const response = yield call(fakeRegister, payload);
+    // *submit({ payload }, { call, put }) {
+    //   const response = yield call(fakeRegister, payload);
+    //   yield put({
+    //     type: 'registerHandle',
+    //     payload: response,
+    //   });
+    // },
+    *sendAuthCode({ payload }, { call }) {
+      const response = yield call(sendAuthCode, payload);
+      if (response.code === 1) {
+        message.success(response.msg);
+      } else {
+        message.error(response.msg);
+      }
+    },
+    *register({ payload }, { call, put }) {
+      const response = yield call(register, payload);
+      if (response.code !== 1) {
+        message.error(response.msg);
+      }
       yield put({
         type: 'registerHandle',
         payload: response,
       });
-    },
+    }
   },
 
   reducers: {
     registerHandle(state, { payload }) {
       return {
         ...state,
-        status: payload.status,
+        status: payload.code,
+        msg: payload.msg
       };
     },
+    clearStatus(state) {
+      return {
+        ...state,
+        status: 999
+      }
+    }
   },
 };
 

@@ -1,13 +1,19 @@
 import { AnyAction, Reducer } from 'redux';
+import { message } from 'antd'
 import { EffectsCommandMap } from 'dva';
 import { routerRedux } from 'dva/router';
-import { fakeAccountLogin, getFakeCaptcha } from './service';
+// import { fakeAccountLogin, getFakeCaptcha } from './service';
+import { login, logout } from '@/services/api';
 import { getPageQuery, setAuthority } from './utils/utils';
+import { reloadAuthorized } from '@/utils/Authorized'
+import { stringify } from 'qs';
 
 export interface StateType {
   status?: 'ok' | 'error';
   type?: string;
   currentAuthority?: 'user' | 'guest' | 'admin';
+  code?: number;
+  msg?: string;
 }
 
 export type Effect = (
@@ -20,7 +26,7 @@ export interface ModelType {
   state: StateType;
   effects: {
     login: Effect;
-    getCaptcha: Effect;
+    logout: Effect;
   };
   reducers: {
     changeLoginStatus: Reducer<StateType>;
@@ -36,13 +42,23 @@ const Model: ModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
+      const response = yield call(login, payload);
+      if (response.code === 1) {
+        message.success('登陆成功!');
+        localStorage.setItem('token', response.data);
+        response.currentAuthority = 'admin';
+      } else {
+        message.error(response.msg);
+        response.status = 'error';
+        response.currentAuthority = 'guest';
+      }
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
+
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.code === 1) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };
@@ -61,10 +77,29 @@ const Model: ModelType = {
         yield put(routerRedux.replace(redirect || '/'));
       }
     },
-
-    *getCaptcha({ payload }, { call }) {
-      yield call(getFakeCaptcha, payload);
-    },
+    *logout({ payload }, { call, put }) {
+      yield call(logout, payload);
+      yield put({
+        type: 'changeLoginStatus',
+        payload: {
+          status: false,
+          currentAuthority: 'guest',
+        },
+      });
+      reloadAuthorized();
+      const { redirect } = getPageQuery();
+      // redirect
+      if (window.location.pathname !== '/user/login' && !redirect) {
+        yield put(
+          routerRedux.replace({
+            pathname: '/user/login',
+            search: stringify({
+              redirect: window.location.href,
+            }),
+          })
+        );
+      }
+    }
   },
 
   reducers: {
@@ -73,7 +108,9 @@ const Model: ModelType = {
       return {
         ...state,
         status: payload.status,
+        code: payload.code,
         type: payload.type,
+        msg: payload.msg,
       };
     },
   },

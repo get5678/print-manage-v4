@@ -23,7 +23,7 @@ export default {
   'user-register.userName.required': '请输入用户名!',
   'user-register.password.required': '请输入密码！',
   'user-register.password.twice': '两次输入的密码不匹配!',
-  'user-register.strength.msg': '请至少输入 6 个字符。请不要使用容易被猜到的密码。',
+  'user-register.strength.msg': '请至少输入 6 个字符，包含数字和字母。请不要使用容易被猜到的密码。',
   'user-register.strength.strong': '强度：强',
   'user-register.strength.medium': '强度：中',
   'user-register.strength.short': '强度：太短',

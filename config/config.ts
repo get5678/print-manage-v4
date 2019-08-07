@@ -100,7 +100,7 @@ export default {
               component: './user/login',
             },
             {
-              name: 'register-result',
+              name: 'registerResult',
               path: '/user/register-result',
               component: './user/register-result',
             },
@@ -376,13 +376,13 @@ export default {
     basePath: '/',
   },
   chainWebpack: webpackPlugin,
-  /*
-  proxy: {
-    '/server/api/': {
-      target: 'https://preview.pro.ant.design/',
-      changeOrigin: true,
-      pathRewrite: { '^/server': '' },
-    },
-  },
-  */
+  
+  // proxy: {
+  //   '/cloudprint': {
+  //     target: 'https://pin.varbee.com/cloudprint/manager/',
+  //     changeOrigin: true,
+  //     pathRewrite: { '^/cloudprint': '/cloudprint' },
+  //   },
+  // },
+  
 } as IConfig;

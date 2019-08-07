@@ -79,7 +79,7 @@ export interface UserRegisterParams {
     };
   }) => ({
     userRegister,
-    submitting: loading.effects['userRegister/submit'],
+    submitting: loading.effects['userRegister/register'],
   }),
 )
 class Register extends Component<
@@ -98,9 +98,12 @@ class Register extends Component<
   interval: number | undefined = undefined;
 
   componentDidUpdate() {
-    const { userRegister, form } = this.props;
-    const account = form.getFieldValue('mail');
-    if (userRegister.status === 'ok') {
+    const { userRegister, form, dispatch } = this.props;
+    const account = form.getFieldValue('mobile');
+    if (userRegister.status === -2) {
+      dispatch({
+        type: 'userRegister/clearStatus'
+      })
       message.success('注册成功！');
       router.push({
         pathname: '/user/register-result',
@@ -116,15 +119,25 @@ class Register extends Component<
   }
 
   onGetCaptcha = () => {
-    let count = 59;
-    this.setState({ count });
-    this.interval = window.setInterval(() => {
-      count -= 1;
-      this.setState({ count });
-      if (count === 0) {
-        clearInterval(this.interval);
+    const { form, dispatch } = this.props;
+    form.validateFields(['password', 'confirm', 'mobile'], { force: true }, (err, values) => {
+      if (!err) {
+        const { mobile } = values;
+        dispatch({
+          type: 'userRegister/sendAuthCode',
+          payload: mobile
+        })
+        let count = 59;
+        this.setState({ count });
+        this.interval = window.setInterval(() => {
+          count -= 1;
+          this.setState({ count });
+          if (count === 0) {
+            clearInterval(this.interval);
+          }
+        }, 1000);
       }
-    }, 1000);
+    });
   };
 
   getPasswordStatus = () => {
@@ -143,13 +156,14 @@ class Register extends Component<
     e.preventDefault();
     const { form, dispatch } = this.props;
     form.validateFields({ force: true }, (err, values) => {
+      const { captcha, mobile, password } = values
       if (!err) {
-        const { prefix } = this.state;
         dispatch({
-          type: 'userRegister/submit',
+          type: 'userRegister/register',
           payload: {
-            ...values,
-            prefix,
+            phoneNum: mobile,
+            psw: password,
+            authCode: captcha
           },
         });
       }
@@ -288,6 +302,7 @@ class Register extends Component<
                 <Input
                   size="large"
                   type="password"
+                  maxLength={16}
                   placeholder={formatMessage({ id: 'user-register.password.placeholder' })}
                 />,
               )}
@@ -308,11 +323,12 @@ class Register extends Component<
               <Input
                 size="large"
                 type="password"
+                maxLength={16}
                 placeholder={formatMessage({ id: 'user-register.confirm-password.placeholder' })}
               />,
             )}
           </FormItem>
-          <FormItem>
+          {/* <FormItem>
             {getFieldDecorator('invite', {
               rules: [
                 {
@@ -326,7 +342,7 @@ class Register extends Component<
                 placeholder='注册码，请联系管理员获得'
               />,
             )}
-          </FormItem>
+          </FormItem> */}
           <FormItem>
             <Row gutter={8}>
               <Col span={16}>
@@ -340,6 +356,7 @@ class Register extends Component<
                 })(
                   <Input
                     size="large"
+                    maxLength={6}
                     placeholder={formatMessage({ id: 'user-register.verification-code.placeholder' })}
                   />,
                 )}
