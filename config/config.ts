@@ -376,13 +376,11 @@ export default {
     basePath: '/',
   },
   chainWebpack: webpackPlugin,
-  
   // proxy: {
   //   '/cloudprint': {
-  //     target: 'https://pin.varbee.com/cloudprint/manager/',
+  //     target: 'https://pin.varbee.com/cloudprint/manager',
   //     changeOrigin: true,
   //     pathRewrite: { '^/cloudprint': '/cloudprint' },
   //   },
   // },
-  
 } as IConfig;

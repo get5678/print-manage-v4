@@ -1,4 +1,4 @@
-import { Card, Col, Divider, Input, Row, Icon, Button } from 'antd';
+import { Card, Col, Divider, Input, Row, Icon, Button, message } from 'antd';
 import React, { PureComponent } from 'react';
 
 import { Dispatch } from 'redux';
@@ -6,15 +6,16 @@ import { GridContent } from '@ant-design/pro-layout';
 import { RouteChildrenProps } from 'react-router';
 import { connect } from 'dva';
 import BaseView from './components/base';
-import { ModalState } from './model';
+import { CurrentUser, ModalState, Good } from './model';
 import router from 'umi/router';
-import { CurrentUser } from './data.d';
 import styles from './Center.less';
 
 interface CenterProps extends RouteChildrenProps {
   dispatch: Dispatch<any>;
   currentUser: CurrentUser;
   currentUserLoading: boolean;
+  list: Good[];
+  uploading: boolean;
 }
 interface CenterState {
   inputVisible: boolean;
@@ -30,7 +31,9 @@ interface CenterState {
     accountCenter: ModalState;
   }) => ({
     currentUser: accountCenter.currentUser,
-    currentUserLoading: loading.effects['accountCenter/fetchCurrent'],
+    list: accountCenter.list,
+    currentUserLoading: loading.effects['accountCenter/shopInfo'],
+    uploading: loading.effects['accountCenter/editInfo'],
   }),
 )
 class Center extends PureComponent<
@@ -52,20 +55,47 @@ class Center extends PureComponent<
     router.push(`/types`);
   };
 
-  public input: Input | null | undefined = undefined;
+  /**
+   * @description 初始图片
+   * @returns
+   * @memberof Center
+   */
+  getAvatarURL() {
+    const { currentUser } = this.props;
+    if (currentUser) {
+      if (currentUser.shopAvatar) {
+        return currentUser.shopAvatar;
+      }
+      // 默认图片
+      const url = 'http://square2.oss-cn-shanghai.aliyuncs.com/2019-08-06-%E5%9B%BE%E5%B1%82%201.png';
+      return url;
+    }
+    return '';
+  }
 
-  componentDidMount() {
+  handleUpload = (formData: FormData) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'accountCenter/fetchCurrent',
-    });
+      type: 'accountCenter/editInfo',
+      payload: {
+        formData,
+        message,
+        dispatch
+      }
+    })
+  }
+
+  public input: Input | null | undefined = undefined;
+
+  componentWillMount() {
+    const { dispatch } = this.props;
     dispatch({
-      type: 'accountCenter/fetch',
+      type: 'accountCenter/shopInfo'
     });
   }
 
   render() {
-    const { currentUser, currentUserLoading } = this.props;
+    const { currentUser, currentUserLoading, list, uploading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
     return (
       <GridContent>
@@ -75,28 +105,30 @@ class Center extends PureComponent<
               {!dataLoading ? (
                 <div>
                   <div className={styles.avatarHolder}>
-                    <img alt="" src={currentUser.avatar} />
-                    <div className={styles.name}>{currentUser.name}</div>
-                    <div>18048916710</div>
+                    <img alt="" src={this.getAvatarURL()} />
+                    <div className={styles.name}>{currentUser.shopName || '暂无名字，赶紧设置吧'}</div>
+                    <div>{currentUser.shopPhone}</div>
                   </div>
                   <div className={styles.detail}>
                     <p>
                       <Icon type="home" theme="filled" />
-                      教师公寓
+                      {currentUser.shopAddress || '暂无地址，赶紧设置吧'}
                     </p>
                   </div>
                   <Divider dashed />
                   <div className={styles.goods}>
-                    <p>
-                      <span>黑白单面A4</span>
-                      <span>0.2 元/张</span>
-                    </p>
-                    <p>
-                      <span>黑白双面A4</span>
-                      <span>0.2 元/张</span>
-                    </p>
+                    {
+                      list && list.length > 0 ? list.map(
+                        item => (
+                          <p>
+                            <span>{item.price.printType}</span>
+                            <span>{item.price.printPrice} 元/张</span>
+                          </p>
+                        )
+                      ) : null
+                    }
                   </div>
-                  <Button type="primary" onClick={this.handlerSubmit}>跳转修改商品</Button>
+                  <Button loading={uploading} type="primary" onClick={this.handlerSubmit}>修改商品信息</Button>
                   <Divider dashed />
                 </div>
               ) : null}
@@ -106,8 +138,9 @@ class Center extends PureComponent<
             <Card
               className={styles.tabsCard}
               bordered={false}
+              loading={dataLoading}
             >
-              <BaseView /> 
+              {!dataLoading ? <BaseView onHandleUpload={this.handleUpload.bind(this)} /> : null}
             </Card>
           </Col>
         </Row>

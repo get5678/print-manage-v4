@@ -1,11 +1,27 @@
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
-import { CurrentUser, ListItemDataType } from './data.d';
-import { queryCurrent, queryFakeList } from './service';
+import { shopInfo, editInfo } from '@/services/api'
+
+export interface CurrentUser {
+  id: string | number;
+  shopName?: string;
+  shopAvatar?: string;
+  shopAddress?: string;
+  shopPhone: string;
+}
+export interface Good {
+  printTypeUrl: string;
+  hot: number | string;
+  price: {
+    printType: string;
+    printPrice: number;
+    conbinationId: number
+  }
+}
 
 export interface ModalState {
   currentUser: Partial<CurrentUser>;
-  list: ListItemDataType[];
+  list: Good[];
 }
 
 export type Effect = (
@@ -17,12 +33,11 @@ export interface ModelType {
   namespace: string;
   state: ModalState;
   effects: {
-    fetchCurrent: Effect;
-    fetch: Effect;
+    shopInfo: Effect;
+    editInfo: Effect;
   };
   reducers: {
     saveCurrentUser: Reducer<ModalState>;
-    queryList: Reducer<ModalState>;
   };
 }
 
@@ -35,35 +50,40 @@ const Model: ModelType = {
   },
 
   effects: {
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
+    *shopInfo(_, { call, put }) {
+      const response = yield call(shopInfo);
       yield put({
         type: 'saveCurrentUser',
-        payload: response,
-      });
+        payload: response.data
+      })
     },
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
-      yield put({
-        type: 'queryList',
-        payload: Array.isArray(response) ? response : [],
-      });
-    },
+    *editInfo({ payload }, { call }) {
+      const { formData, message, dispatch } = payload;
+      const response = yield call(editInfo, formData);
+      if (response.code === 1) {
+        message.success('更新基本信息成功');
+        dispatch({
+          type: 'accountCenter/shopInfo'
+        });
+      } else {
+        message.error(response.msg);
+      }
+    }
   },
 
   reducers: {
-    saveCurrentUser(state, action) {
+    saveCurrentUser(state, { payload }) {
+      let good = [];
+      if (payload.shopPrice) {
+        good = payload.shopPrice;
+        delete payload.shopPrice;
+      }
       return {
         ...(state as ModalState),
-        currentUser: action.payload || {},
+        currentUser: payload || {},
+        list: good
       };
-    },
-    queryList(state, action) {
-      return {
-        ...(state as ModalState),
-        list: action.payload,
-      };
-    },
+    }
   },
 };
 

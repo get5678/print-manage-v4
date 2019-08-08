@@ -82,7 +82,7 @@ const Model: ModelType = {
       yield put({
         type: 'changeLoginStatus',
         payload: {
-          status: false,
+          status: 'error',
           currentAuthority: 'guest',
         },
       });

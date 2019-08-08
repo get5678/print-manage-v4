@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 
 const url = 'https://pin.varbee.com/cloudprint/manager'
+// const url = '/cloudprint'
 
 interface RegisterInfo {
   phoneNum: string;
@@ -26,6 +27,23 @@ interface PageInfo {
 export async function shopInfo(): Promise<any> {
   const token = localStorage.getItem('token') || '';
   return request(`${url}/shop/shopInfo`, {
+    headers: {
+      token
+    }
+  });
+}
+
+/**
+ * @description 商家修改基本信息
+ * @export
+ * @returns {Promise<any>}
+ */
+export async function editInfo(data: FormData): Promise<any> {
+  const token = localStorage.getItem('token') || '';
+  console.log(data);
+  return request(`${url}/shop/editInfo`, {
+    method: 'POST',
+    data,
     headers: {
       token
     }
