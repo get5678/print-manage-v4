@@ -67,7 +67,7 @@ class Center extends PureComponent<
         return currentUser.shopAvatar;
       }
       // 默认图片
-      const url = 'http://square2.oss-cn-shanghai.aliyuncs.com/2019-08-06-%E5%9B%BE%E5%B1%82%201.png';
+      const url = '';
       return url;
     }
     return '';
@@ -97,6 +97,7 @@ class Center extends PureComponent<
   render() {
     const { currentUser, currentUserLoading, list, uploading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
+
     return (
       <GridContent>
         <Row gutter={24}>
@@ -105,7 +106,9 @@ class Center extends PureComponent<
               {!dataLoading ? (
                 <div>
                   <div className={styles.avatarHolder}>
-                    <img alt="" src={this.getAvatarURL()} />
+                    <div className={styles.avatarContainer}>
+                      <img alt="" src={this.getAvatarURL()} />
+                    </div>
                     <div className={styles.name}>{currentUser.shopName || '暂无名字，赶紧设置吧'}</div>
                     <div>{currentUser.shopPhone}</div>
                   </div>
@@ -119,13 +122,18 @@ class Center extends PureComponent<
                   <div className={styles.goods}>
                     {
                       list && list.length > 0 ? list.map(
-                        item => (
-                          <p>
+                        item => {
+                          return (
+                          <p key={item.price.combinationId}>
                             <span>{item.price.printType}</span>
                             <span>{item.price.printPrice} 元/张</span>
-                          </p>
-                        )
-                      ) : null
+                          </p>);
+                        }
+                      ) : (
+                        <p>
+                          暂无商品，赶快去设置吧
+                        </p>
+                      )
                     }
                   </div>
                   <Button loading={uploading} type="primary" onClick={this.handlerSubmit}>修改商品信息</Button>

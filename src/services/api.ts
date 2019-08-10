@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 const url = 'https://pin.varbee.com/cloudprint/manager'
-// const url = '/cloudprint'
+// const url = 'cloudprint'
 
 interface RegisterInfo {
   phoneNum: string;
@@ -40,7 +40,6 @@ export async function shopInfo(): Promise<any> {
  */
 export async function editInfo(data: FormData): Promise<any> {
   const token = localStorage.getItem('token') || '';
-  console.log(data);
   return request(`${url}/shop/editInfo`, {
     method: 'POST',
     data,

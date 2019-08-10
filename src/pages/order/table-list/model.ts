@@ -1,6 +1,7 @@
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
-import { addRule, queryRule, removeRule, updateRule } from './service';
+import { queryRule, updateRule } from './service';
+import { getOrder, updateStatue } from '@/services/api';
 
 import { TableListData } from './data.d';
 
@@ -17,18 +18,19 @@ export interface ModelType {
   namespace: string;
   state: StateType;
   effects: {
+    getOrder: Effect;
+    confirmOrder: Effect;
     fetch: Effect;
-    add: Effect;
-    remove: Effect;
     update: Effect;
   };
   reducers: {
     save: Reducer<StateType>;
+    list: Reducer<any>;
   };
 }
 
 const Model: ModelType = {
-  namespace: 'listTableList',
+  namespace: 'order',
 
   state: {
     data: {
@@ -38,6 +40,18 @@ const Model: ModelType = {
   },
 
   effects: {
+    *getOrder({ payload }, { call, put }) {
+      const response = yield call(getOrder, payload);
+      if (response.code === 1) {
+        yield put({
+          type: 'list',
+          payload: response.data
+        }) 
+      }
+    },
+    *confirmOrder( { payload }, { call }) {
+      yield call(updateStatue, payload);
+    },
     *fetch({ payload }, { call, put }) {
       const response = yield call(queryRule, payload);
       yield put({
@@ -45,30 +59,12 @@ const Model: ModelType = {
         payload: response,
       });
     },
-    *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-    *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-    *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
+    *update({ payload, callback}, { call }) {
+      yield call(updateRule, payload);
+      if (callback) {
+        callback()
+      }
+    }
   },
 
   reducers: {
@@ -78,6 +74,22 @@ const Model: ModelType = {
         data: action.payload,
       };
     },
+    list(state, action) {
+      const { orderDetailDTOList, current, pageSize } = action.payload;
+      const total = Number(action.payload.total);
+
+      return {
+        ...state,
+        data: {
+          list: orderDetailDTOList || [],
+          pagination: {
+            current,
+            total,
+            pageSize
+          }
+        },
+      };
+    }
   },
 };
 

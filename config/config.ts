@@ -126,28 +126,28 @@ export default {
               name: 'welcome',
               component: './Welcome',
             },
-            {
-              path: '/dashboard',
-              name: 'dashboard',
-              icon: 'dashboard',
-              routes: [
-                {
-                  name: 'analysis',
-                  path: '/dashboard/analysis',
-                  component: './dashboard/analysis',
-                },
-                {
-                  name: 'monitor',
-                  path: '/dashboard/monitor',
-                  component: './dashboard/monitor',
-                },
-                {
-                  name: 'workplace',
-                  path: '/dashboard/workplace',
-                  component: './dashboard/workplace',
-                },
-              ],
-            },
+            // {
+            //   path: '/dashboard',
+            //   name: 'dashboard',
+            //   icon: 'dashboard',
+            //   routes: [
+            //     {
+            //       name: 'analysis',
+            //       path: '/dashboard/analysis',
+            //       component: './dashboard/analysis',
+            //     },
+            //     {
+            //       name: 'monitor',
+            //       path: '/dashboard/monitor',
+            //       component: './dashboard/monitor',
+            //     },
+            //     {
+            //       name: 'workplace',
+            //       path: '/dashboard/workplace',
+            //       component: './dashboard/workplace',
+            //     },
+            //   ],
+            // },
             {
               path: '/order',
               icon: 'table',
@@ -376,11 +376,11 @@ export default {
     basePath: '/',
   },
   chainWebpack: webpackPlugin,
-  // proxy: {
-  //   '/cloudprint': {
-  //     target: 'https://pin.varbee.com/cloudprint/manager',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/cloudprint': '/cloudprint' },
-  //   },
-  // },
+  proxy: {
+    '/cloudprint': {
+      target: 'https://pin.varbee.com/cloudprint/manager',
+      changeOrigin: true,
+      pathRewrite: { '^/cloudprint': '/cloudprint' },
+    },
+  },
 } as IConfig;

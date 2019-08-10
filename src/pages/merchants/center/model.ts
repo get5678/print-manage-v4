@@ -15,7 +15,7 @@ export interface Good {
   price: {
     printType: string;
     printPrice: number;
-    conbinationId: number
+    combinationId: number
   }
 }
 

@@ -48,4 +48,21 @@ const request = extend({
   credentials: 'include', // 默认请求是否带上cookie
 });
 
+// 对于状态码实际是200的错误处理
+request.interceptors.response.use(async (response) => {
+  const data = await response.clone().json();
+  if (data && data.code === 10301) {
+    notification.error({
+      message: `服务器错误`,
+      description: 'SERVICE_ERROR',
+    });
+  } else if (data && data.code === 0 && data.msg === '请求太快了') {
+    notification.error({
+      message: `请求太快了`,
+      description: '请稍后请求',
+    });
+  }
+  return response;
+})
+
 export default request;

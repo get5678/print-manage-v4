@@ -1,15 +1,12 @@
 import {
   Card,
-  Form,
-  message,
-  Divider
+  Form
 } from 'antd';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { SorterResult } from 'antd/es/table';
 import { connect } from 'dva';
 import moment from 'moment';
 import { StateType } from './model';
@@ -26,7 +23,7 @@ const getValue = (obj: { [x: string]: string[] }) =>
 interface TableListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
   loading: boolean;
-  listTableList: StateType;
+  feedbackList: StateType;
 }
 
 interface TableListState {
@@ -38,18 +35,18 @@ interface TableListState {
 /* eslint react/no-multi-comp:0 */
 @connect(
   ({
-    listTableList,
+    feedbackList,
     loading,
   }: {
-    listTableList: StateType;
+    feedbackList: StateType;
     loading: {
       models: {
         [key: string]: boolean;
       };
     };
   }) => ({
-    listTableList,
-    loading: loading.models.rule,
+    feedbackList,
+    loading: loading.models.feedbackList,
   }),
 )
 class TableList extends Component<TableListProps, TableListState> {
@@ -62,7 +59,7 @@ class TableList extends Component<TableListProps, TableListState> {
   columns: StandardTableColumnProps[] = [
     {
       title: '反馈内容',
-      dataIndex: 'desc',
+      dataIndex: 'content',
     },
     {
       title: '评分',
@@ -73,33 +70,36 @@ class TableList extends Component<TableListProps, TableListState> {
       // needTotal: true,
     },
     {
-      title: '上次调度时间',
-      dataIndex: 'updatedAt',
+      title: '反馈时间',
+      dataIndex: 'gmtCreate',
       render: (val: string) => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
-    {
-      title: '操作',
-      render: (text, record) => (
-        <Fragment>
-          <a href="">删除</a>
-          {/* <Divider type="vertical" />
-          <a href="">其他操作</a> */}
-        </Fragment>
-      ),
-    },
+    // {
+    //   title: '操作',
+    //   render: (text, record) => (
+    //     <Fragment>
+    //       <a href="">删除</a>
+    //       {/* <Divider type="vertical" />
+    //       <a href="">其他操作</a> */}
+    //     </Fragment>
+    //   ),
+    // },
   ];
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'listTableList/fetch',
+      type: 'feedbackList/list',
+      payload: {
+        page: 1,
+        count: 10
+      }
     });
   }
 
   handleStandardTableChange = (
     pagination: Partial<TableListPagination>,
     filtersArg: Record<keyof TableListItem, string[]>,
-    sorter: SorterResult<TableListItem>,
   ) => {
     const { dispatch } = this.props;
     const { formValues } = this.state;
@@ -111,55 +111,16 @@ class TableList extends Component<TableListProps, TableListState> {
     }, {});
 
     const params: Partial<TableListParams> = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
+      page: pagination.current,
+      count: pagination.pageSize,
       ...formValues,
       ...filters,
     };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
 
     dispatch({
-      type: 'listTableList/fetch',
+      type: 'feedbackList/list',
       payload: params,
     });
-  };
-
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'listTableList/fetch',
-      payload: {},
-    });
-  };
-
-  handleMenuClick = (e: { key: string }) => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'listTableList/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
   };
 
   handleSelectRows = (rows: TableListItem[]) => {
@@ -186,7 +147,7 @@ class TableList extends Component<TableListProps, TableListState> {
       });
 
       dispatch({
-        type: 'listTableList/fetch',
+        type: 'feedbackList/list',
         payload: values,
       });
     });
@@ -194,7 +155,7 @@ class TableList extends Component<TableListProps, TableListState> {
 
   render() {
     const {
-      listTableList: { data },
+      feedbackList: { data },
       loading,
     } = this.props;
 
@@ -211,6 +172,7 @@ class TableList extends Component<TableListProps, TableListState> {
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
+              rowKey="id"
             />
           </div>
         </Card>

@@ -1,6 +1,13 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-08-02 19:17:01
+ * @LastEditTime: 2019-08-09 16:24:48
+ * @LastEditors: Please set LastEditors
+ */
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
-import { addRule, queryRule, removeRule, updateRule } from './service';
+import { getFeedback } from '@/services/api';
 
 import { TableListData } from './data.d';
 
@@ -17,10 +24,7 @@ export interface ModelType {
   namespace: string;
   state: StateType;
   effects: {
-    fetch: Effect;
-    add: Effect;
-    remove: Effect;
-    update: Effect;
+    list: Effect;
   };
   reducers: {
     save: Reducer<StateType>;
@@ -28,56 +32,44 @@ export interface ModelType {
 }
 
 const Model: ModelType = {
-  namespace: 'listTableList',
+  namespace: 'feedbackList',
 
   state: {
     data: {
       list: [],
       pagination: {},
-    },
+    }
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
-    *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-    *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-    *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
+    *list({ payload }, { call, put}) {
+      const response = yield call(getFeedback, payload);
+      if (response.code === 1) {
+        yield put({
+          type: 'save',
+          payload: response.data,
+        });
+      }
+    }
   },
 
   reducers: {
     save(state, action) {
+      const { feedbackDTOList, current, pageSize } = action.payload;
+      const total = Number(action.payload.total);
+
       return {
         ...state,
-        data: action.payload,
+        data: {
+          list: feedbackDTOList || [],
+          pagination: {
+            current,
+            total,
+            pageSize
+          }
+        },
       };
-    },
+    }
   },
 };
 

@@ -43,7 +43,7 @@ const Model: ModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(login, payload);
-      if (response.code === 1) {
+      if (response.code && response.code === 1) {
         message.success('登陆成功!');
         localStorage.setItem('token', response.data);
         response.currentAuthority = 'admin';
@@ -58,7 +58,7 @@ const Model: ModelType = {
       });
 
       // Login successfully
-      if (response.code === 1) {
+      if (response.code && response.code === 1) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };
@@ -108,7 +108,7 @@ const Model: ModelType = {
       return {
         ...state,
         status: payload.status,
-        code: payload.code,
+        code: payload.code || -1,
         type: payload.type,
         msg: payload.msg,
       };
