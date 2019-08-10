@@ -152,19 +152,19 @@ export default {
               path: '/order',
               icon: 'table',
               name: 'order',
-              component: './order/table-list'
+              component: './order/table-list',
             },
             {
               path: '/types',
               icon: 'table',
               name: 'types',
-              component: './types/basic-list'
+              component: './types/table-list',
             },
             {
               path: '/feedback',
               icon: 'table',
               name: 'feedback',
-              component: './feedback/table-list'
+              component: './feedback/table-list',
             },
             {
               path: '/merchants',
@@ -348,7 +348,7 @@ export default {
         resourcePath: string;
       },
       _: string,
-      localName: string
+      localName: string,
     ) => {
       if (
         context.resourcePath.includes('node_modules') ||
@@ -376,11 +376,4 @@ export default {
     basePath: '/',
   },
   chainWebpack: webpackPlugin,
-  // proxy: {
-  //   '/cloudprint': {
-  //     target: 'https://pin.varbee.com/cloudprint/manager',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/cloudprint': '/cloudprint' },
-  //   },
-  // },
 } as IConfig;
