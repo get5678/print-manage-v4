@@ -11,6 +11,7 @@ export interface FormValsType extends Partial<TableListItem> {
   time?: string;
   frequency?: string;
   printRelId?: number;
+  price?: number;
 }
 
 export interface UpdateFormProps extends FormComponentProps {
@@ -40,29 +41,29 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
   };
 
   handleSubmit = () => {
-    const { form, handleUpdate } = this.props;
-    form.validateFields((err, value) => {
+    const { form, handleUpdate, values } = this.props;
+    form.validateFields((err, formValue) => {
       if (err) return;
-      handleUpdate(value);
+      formValue.printRelId = values.printRelId;
+      handleUpdate(formValue);
     });
   };
 
   render() {
     const { updateModalVisible, handleUpdateModalVisible, values, form } = this.props;
-    console.log('updata props', this.props);
     const updateForm = (
       <Form onSubmit={this.handleSubmit}>
-        <FormItem {...this.formLayout}>
-          {form.getFieldDecorator('printRelId', {
+        <FormItem {...this.formLayout} label="商品类型">
+          {form.getFieldDecorator('printType', {
             rules: [{ required: true, message: '请选择商品类型' }],
             initialValue: values.printType,
           })(<Input disabled />)}
         </FormItem>
-        <FormItem {...this.formLayout}>
+        <FormItem {...this.formLayout} label="商品价格">
           {form.getFieldDecorator('price', {
             rules: [{ required: true, message: '请输入商品价格' }],
             initialValue: values.printPrice,
-          })(<InputNumber min={0} />)}
+          })(<InputNumber style={{ width: '100%' }} min={0} />)}
         </FormItem>
       </Form>
     );
@@ -72,10 +73,10 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
         width={640}
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="规则配置"
+        title="编辑商品"
         visible={updateModalVisible}
-        onCancel={() => handleUpdateModalVisible(false, values)}
-        afterClose={() => handleUpdateModalVisible()}
+        onCancel={() => handleUpdateModalVisible(false)}
+        onOk={() => this.handleSubmit()}
       >
         {updateForm}
       </Modal>

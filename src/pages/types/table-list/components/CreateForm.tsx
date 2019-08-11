@@ -15,6 +15,7 @@ interface CreateFormProps extends FormComponentProps {
 
 const CreateForm: React.FC<CreateFormProps> = props => {
   const { modalVisible, form, handleAdd, handleModalVisible, shopComble } = props;
+
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -34,7 +35,7 @@ const CreateForm: React.FC<CreateFormProps> = props => {
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商品编号">
         {form.getFieldDecorator('conbineId', {
           rules: [{ required: true, message: '请选择商品编号' }],
-          initialValue: shopComble[0] ? shopComble[0].id : undefined,
+          initialValue: shopComble.length > 0 ? shopComble[0].id : undefined,
         })(
           <Select style={{ width: '100%' }}>
             {shopComble.map((item: shopCombleInfo) => (
@@ -48,7 +49,7 @@ const CreateForm: React.FC<CreateFormProps> = props => {
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商品价格">
         {form.getFieldDecorator('price', {
           rules: [{ required: true }],
-          initialValue: 0.8,
+          initialValue: 0.2,
         })(<InputNumber style={{ width: '100%' }} min={0} />)}
       </FormItem>
     </Modal>

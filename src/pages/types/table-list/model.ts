@@ -1,7 +1,13 @@
 import { AnyAction, Reducer } from 'redux';
 import { message } from 'antd';
 import { EffectsCommandMap } from 'dva';
-import { shopInfo, addInfo, getCombleInfo } from '../../../services/api';
+import {
+  shopInfo,
+  addInfo,
+  getCombleInfo,
+  updateCombleInfo,
+  deleteCombleInfo,
+} from '../../../services/api';
 
 export interface StateType {
   shopInfo?: any;
@@ -20,6 +26,8 @@ export interface ModelType {
     getShopInfo: Effect;
     addShopInfo: Effect;
     getShopComble: Effect;
+    updateShopComble: Effect;
+    deleteShopComble: Effect;
   };
   reducers: {
     save: Reducer<StateType>;
@@ -75,13 +83,27 @@ const Model: ModelType = {
     *getShopComble({}, { call, put }) {
       const response = yield call(getCombleInfo);
       if (response.code !== 1) {
-        message.error(`添加失败：${response.msg}`);
+        message.error(`获取失败：${response.msg}`);
       }
       yield put({
         type: 'save',
         attr: 'shopComble',
         data: response.data,
       });
+    },
+    *updateShopComble({ payload: { successCallback, updatePara } }, { call }) {
+      const response = yield call(updateCombleInfo, updatePara);
+      console.log('update response', response);
+      if (response.code !== 1) {
+        message.error(`修改失败：${response.msg}`);
+      } else {
+        successCallback();
+      }
+    },
+    *deleteShopComble({ payload: { combinations } }, { call }) {
+      console.log('payload', combinations);
+      const response = yield call(deleteCombleInfo, combinations);
+      console.log('deletet', response);
     },
   },
 

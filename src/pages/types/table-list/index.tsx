@@ -1,4 +1,4 @@
-import { Button, Card, Col, Divider, Form, Input, Row, Select, message } from 'antd';
+import { Button, Card, Col, Divider, Form, Input, Row, Select, message, Popconfirm } from 'antd';
 import React, { Component, Fragment } from 'react';
 
 import { Dispatch } from 'redux';
@@ -10,7 +10,13 @@ import { StateType } from './model';
 import CreateForm from './components/CreateForm';
 import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
 import UpdateForm, { FormValsType } from './components/UpdateForm';
-import { TableListItem, TableListPagination, TableListParams } from './data.d';
+import {
+  TableListItem,
+  TableListPagination,
+  TableListParams,
+  UpdateInfo,
+  shopCombleInfo,
+} from './data.d';
 
 import styles from './style.less';
 
@@ -82,7 +88,9 @@ class TableList extends Component<TableListProps, TableListState> {
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, record)}>编辑</a>
           <Divider type="vertical" />
-          <a onClick={() => this.handleDeleteItem(text)}>删除</a>
+          <Popconfirm title="确定删除？" onConfirm={() => this.handleDeleteItem(record)}>
+            <a>删除</a>
+          </Popconfirm>
         </Fragment>
       ),
     },
@@ -179,9 +187,7 @@ class TableList extends Component<TableListProps, TableListState> {
     dispatch({
       type: 'listTableList/getShopComble',
     });
-    this.setState({
-      modalVisible: !!flag,
-    });
+    this.handleModalVisible(flag);
   };
 
   handleModalVisible = (flag?: boolean) => {
@@ -191,10 +197,19 @@ class TableList extends Component<TableListProps, TableListState> {
   };
 
   handleUpdateModalVisible = (flag?: boolean, record?: FormValsType) => {
+    const {
+      dispatch,
+      listTableList: { shopComble },
+    } = this.props;
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
     });
+    if (shopComble.length === 0) {
+      dispatch({
+        type: 'listTableList/getShopComble',
+      });
+    }
   };
 
   handleAdd = (fields: { price: number; conbineId: string }) => {
@@ -215,19 +230,40 @@ class TableList extends Component<TableListProps, TableListState> {
     this.handleModalVisible();
   };
 
+  getSameID = (printType: string) => {
+    const {
+      listTableList: { shopComble },
+    } = this.props;
+    let combileId: number = 0;
+    shopComble.map((item: shopCombleInfo) => {
+      if (item.typeName === printType) {
+        combileId = Number(item.id);
+      }
+    });
+    return combileId;
+  };
+
   handleUpdate = (fields: FormValsType) => {
-    console.log('filed handleUpdate', fields);
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'listTableList/update',
-    //   payload: {
-    //     name: fields.name,
-    //     desc: fields.desc,
-    //     key: fields.key,
-    //   },
-    // });
-    message.success('配置成功');
-    this.handleUpdateModalVisible();
+    console.log('fiels', fields);
+    const { dispatch } = this.props;
+    const updatePara: UpdateInfo = {
+      price: Number(fields.price),
+      printRelId: Number(fields.printRelId),
+    };
+    // getSameID(fileds.)
+    dispatch({
+      type: 'listTableList/updateShopComble',
+      payload: {
+        updatePara,
+        successCallback() {
+          message.success('修改成功');
+          dispatch({
+            type: 'listTableList/getShopInfo',
+          });
+        },
+      },
+    });
+    this.handleUpdateModalVisible(false);
   };
 
   handleDelete = (selectedRows: any[]) => {
@@ -241,8 +277,27 @@ class TableList extends Component<TableListProps, TableListState> {
     });
   };
 
-  handleDeleteItem = (id: any) => {
-    console.log('单个删除', id.name);
+  handleDeleteItem = (record: any) => {
+    console.log('单个删除 record', record);
+    const { dispatch } = this.props;
+    const combinations = [];
+    // for(let i = 0; i < 2; i++) {
+    //   _combinations[i] = 'combinations'
+    // }
+    //const combinations = new Map([['combinations', Number(record.printRelId)], ['combinations', this.getSameID(record.printType)]]);
+    combinations.push(Number(record.printRelId), this.getSameID(record.printType));
+    // combinations.push({
+    //   'combinations': Number(record.printRelId)
+    // }, {
+    //     'combinations': this.getSameID(record.printType)
+    // })
+    for (let i = 0; i < 2; i++) {}
+    dispatch({
+      type: 'listTableList/deleteShopComble',
+      payload: {
+        combinations,
+      },
+    });
   };
 
   renderSimpleForm() {
@@ -286,6 +341,7 @@ class TableList extends Component<TableListProps, TableListState> {
       listTableList: { shopComble, shopInfo },
       loading,
     } = this.props;
+    console.log('render props', shopInfo);
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,

@@ -1,7 +1,6 @@
 import request from '@/utils/request';
-
+// import { http } from '@/utils/globalRquest';
 const url = 'https://pin.varbee.com/cloudprint/manager';
-// const url = '/cloudprint'
 
 interface RegisterInfo {
   phoneNum: string;
@@ -26,6 +25,12 @@ interface DeteleInfo {
   combinations: any;
 }
 
+interface UpdateInfo {
+  price: number;
+  conbineId: number;
+  printRelId: number;
+}
+
 interface Code {
   code: number;
   data: any[];
@@ -48,6 +53,9 @@ export async function shopInfo(): Promise<any> {
     },
   });
 }
+// export function shopInfo() {
+//   http(`${url}/shop/shopInfo`)
+// }
 
 /**
  * @description 商家修改基本信息
@@ -88,15 +96,32 @@ export async function getCombleInfo(): Promise<Code> {
   });
 }
 /**
+ * @description 商家修改组合类型
+ * @param data
+ */
+export async function updateCombleInfo(data: UpdateInfo): Promise<Code> {
+  return request(`${url}/shop/editPrintType`, {
+    headers: {
+      token,
+    },
+    method: 'POST',
+    data,
+  });
+}
+/**
  * @description 商家删除商品组合
  * @param data
  */
 export async function deleteCombleInfo(data: DeteleInfo): Promise<Code> {
+  console.log('data', JSON.stringify(data));
   return request(`${url}/shop/delete`, {
+    params: {
+      combinations: JSON.stringify(data),
+    },
     headers: {
       token,
     },
-    data,
+    // data: 'combinations'+JSON.stringify(data)
   });
 }
 

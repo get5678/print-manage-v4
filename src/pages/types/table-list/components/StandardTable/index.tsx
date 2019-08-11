@@ -105,7 +105,6 @@ class StandardTable extends Component<StandardTableProps<TableListItem>, Standar
   render() {
     const { selectedRowKeys } = this.state;
     const { data, columns, ...rest } = this.props;
-
     const pagination = false;
 
     const paginationProps = pagination
@@ -140,7 +139,7 @@ class StandardTable extends Component<StandardTableProps<TableListItem>, Standar
           />
         </div>
         <Table
-          rowKey="shopInfo"
+          rowKey="printRelId"
           rowSelection={rowSelection}
           dataSource={data}
           pagination={paginationProps}

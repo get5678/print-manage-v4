@@ -31,3 +31,9 @@ export interface TableListParams {
   pageSize: number;
   currentPage: number;
 }
+
+export interface UpdateInfo {
+  price: number;
+  conbineId?: number;
+  printRelId: number;
+}
