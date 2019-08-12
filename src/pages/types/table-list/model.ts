@@ -93,17 +93,21 @@ const Model: ModelType = {
     },
     *updateShopComble({ payload: { successCallback, updatePara } }, { call }) {
       const response = yield call(updateCombleInfo, updatePara);
-      console.log('update response', response);
       if (response.code !== 1) {
         message.error(`修改失败：${response.msg}`);
       } else {
         successCallback();
       }
     },
-    *deleteShopComble({ payload: { combinations } }, { call }) {
+    *deleteShopComble({ payload: { combinations, successCallback } }, { call }) {
       console.log('payload', combinations);
       const response = yield call(deleteCombleInfo, combinations);
       console.log('deletet', response);
+      if (response.code !== 1) {
+        message.error(`删除失败：${response.msg}`);
+      } else {
+        successCallback();
+      }
     },
   },
 

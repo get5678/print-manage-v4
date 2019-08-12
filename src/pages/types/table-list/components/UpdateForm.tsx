@@ -12,6 +12,7 @@ export interface FormValsType extends Partial<TableListItem> {
   frequency?: string;
   printRelId?: number;
   price?: number;
+  printType: string;
 }
 
 export interface UpdateFormProps extends FormComponentProps {

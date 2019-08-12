@@ -46,7 +46,6 @@ const token = localStorage.getItem('token') || '';
  */
 export async function shopInfo(): Promise<any> {
   const token = localStorage.getItem('token') || '';
-  console.log('token', token);
   return request(`${url}/shop/shopInfo`, {
     headers: {
       token,
@@ -63,7 +62,6 @@ export async function shopInfo(): Promise<any> {
  * @returns {Promise<any>}
  */
 export async function editInfo(data: FormData): Promise<Code> {
-  console.log(data);
   return request(`${url}/shop/editInfo`, {
     method: 'POST',
     data,
@@ -113,15 +111,13 @@ export async function updateCombleInfo(data: UpdateInfo): Promise<Code> {
  * @param data
  */
 export async function deleteCombleInfo(data: DeteleInfo): Promise<Code> {
-  console.log('data', JSON.stringify(data));
   return request(`${url}/shop/delete`, {
-    params: {
-      combinations: JSON.stringify(data),
-    },
+    method: 'POST',
+    data,
     headers: {
       token,
     },
-    // data: 'combinations'+JSON.stringify(data)
+    requestType: 'json',
   });
 }
 

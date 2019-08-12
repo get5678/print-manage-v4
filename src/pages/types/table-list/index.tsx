@@ -229,7 +229,11 @@ class TableList extends Component<TableListProps, TableListState> {
     });
     this.handleModalVisible();
   };
-
+  /**
+   *
+   *@description 获取类型id
+   * @memberof TableList
+   */
   getSameID = (printType: string) => {
     const {
       listTableList: { shopComble },
@@ -244,13 +248,12 @@ class TableList extends Component<TableListProps, TableListState> {
   };
 
   handleUpdate = (fields: FormValsType) => {
-    console.log('fiels', fields);
     const { dispatch } = this.props;
     const updatePara: UpdateInfo = {
       price: Number(fields.price),
       printRelId: Number(fields.printRelId),
+      conbineId: this.getSameID(fields.printType),
     };
-    // getSameID(fileds.)
     dispatch({
       type: 'listTableList/updateShopComble',
       payload: {
@@ -266,36 +269,40 @@ class TableList extends Component<TableListProps, TableListState> {
     this.handleUpdateModalVisible(false);
   };
 
-  handleDelete = (selectedRows: any[]) => {
-    console.log('批量删除函数\n', selectedRows);
+  handleDelete = (selectedRows: TableListItem[]) => {
     const { dispatch } = this.props;
+    const combinations: number[] = [];
+    selectedRows.map(item => {
+      combinations.push(Number(item.printRelId), this.getSameID(item.printType));
+    });
     dispatch({
-      type: 'listTableList/delete',
+      type: 'listTableList/deleteShopComble',
       payload: {
-        desc: selectedRows,
+        combinations,
+        successCallback() {
+          message.success('删除成功');
+          dispatch({
+            type: 'listTableList/getShopInfo',
+          });
+        },
       },
     });
   };
 
   handleDeleteItem = (record: any) => {
-    console.log('单个删除 record', record);
     const { dispatch } = this.props;
     const combinations = [];
-    // for(let i = 0; i < 2; i++) {
-    //   _combinations[i] = 'combinations'
-    // }
-    //const combinations = new Map([['combinations', Number(record.printRelId)], ['combinations', this.getSameID(record.printType)]]);
     combinations.push(Number(record.printRelId), this.getSameID(record.printType));
-    // combinations.push({
-    //   'combinations': Number(record.printRelId)
-    // }, {
-    //     'combinations': this.getSameID(record.printType)
-    // })
-    for (let i = 0; i < 2; i++) {}
     dispatch({
       type: 'listTableList/deleteShopComble',
       payload: {
         combinations,
+        successCallback() {
+          message.success('删除成功');
+          dispatch({
+            type: 'listTableList/getShopInfo',
+          });
+        },
       },
     });
   };
