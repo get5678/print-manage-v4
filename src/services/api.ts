@@ -1,7 +1,6 @@
 import request from '@/utils/request';
-
-const url = 'https://pin.varbee.com/cloudprint/manager'
-// const url = '/cloudprint'
+// import { http } from '@/utils/globalRquest';
+const url = 'https://pin.varbee.com/cloudprint/manager';
 
 interface RegisterInfo {
   phoneNum: string;
@@ -19,6 +18,25 @@ interface PageInfo {
   count: number;
   orderStatus: string[] | number[]
 }
+interface ConbinInfo {
+  price: number;
+  conbineId: number;
+}
+interface DeteleInfo {
+  combinations: any;
+}
+
+interface UpdateInfo {
+  price: number;
+  conbineId: number;
+  printRelId: number;
+}
+
+interface Code {
+  code: number;
+  data: any[];
+  msg: string;
+}
 
 /**
  * @desperation 商家获取信息接口
@@ -29,10 +47,13 @@ export async function shopInfo(): Promise<any> {
   const token = localStorage.getItem('token') || '';
   return request(`${url}/shop/shopInfo`, {
     headers: {
-      token
-    }
+      token,
+    },
   });
 }
+// export function shopInfo() {
+//   http(`${url}/shop/shopInfo`)
+// }
 
 /**
  * @description 商家修改基本信息
@@ -45,8 +66,62 @@ export async function editInfo(data: FormData): Promise<any> {
     method: 'POST',
     data,
     headers: {
-      token
-    }
+      token,
+    },
+  });
+}
+/**
+ * @description 商家添加商品组合信息
+ * @param data
+ */
+export async function addInfo(data: ConbinInfo): Promise<Code> {
+  const token = localStorage.getItem('token') || '';
+  return request(`${url}/shop/additionPrintType`, {
+    method: 'POST',
+    headers: {
+      token,
+    },
+    data,
+  });
+}
+/**
+ * @description 商家获取组合类型
+ */
+export async function getCombleInfo(): Promise<Code> {
+  const token = localStorage.getItem('token') || '';
+  return request(`${url}/shop/combinations`, {
+    headers: {
+      token,
+    },
+  });
+}
+/**
+ * @description 商家修改组合类型
+ * @param data
+ */
+export async function updateCombleInfo(data: UpdateInfo): Promise<Code> {
+  const token = localStorage.getItem('token') || '';
+  return request(`${url}/shop/editPrintType`, {
+    headers: {
+      token,
+    },
+    method: 'POST',
+    data,
+  });
+}
+/**
+ * @description 商家删除商品组合
+ * @param data
+ */
+export async function deleteCombleInfo(data: DeteleInfo): Promise<Code> {
+  const token = localStorage.getItem('token') || '';
+  return request(`${url}/shop/delete`, {
+    method: 'POST',
+    data,
+    headers: {
+      token,
+    },
+    requestType: 'json',
   });
 }
 
@@ -56,12 +131,12 @@ export async function editInfo(data: FormData): Promise<any> {
  * @param {string} phoneNum
  * @returns {Promise<any>}
  */
-export async function sendAuthCode(phoneNum: string): Promise<any> {
+export async function sendAuthCode(phoneNum: string): Promise<Code> {
   const token = localStorage.getItem('token') || '';
   return request(`${url}/sendAuthCode?phoneNum=${phoneNum}&flag=${1}`, {
     headers: {
-      token
-    }
+      token,
+    },
   });
 }
 
@@ -71,11 +146,10 @@ export async function sendAuthCode(phoneNum: string): Promise<any> {
  * @param {*} data
  * @returns {Promise<any>}
  */
-export async function register(data: RegisterInfo): Promise<any> {
-  // const token = localStorage.getItem('token') || '';
+export async function register(data: RegisterInfo): Promise<Code> {
   return request(`${url}/register`, {
     method: 'POST',
-    data
+    data,
   });
 }
 
@@ -85,11 +159,10 @@ export async function register(data: RegisterInfo): Promise<any> {
  * @param {LoginInfo} data
  * @returns {Promise<any>}
  */
-export async function login(data: LoginInfo): Promise<any> {
-  // const token = localStorage.getItem('token') || '';
+export async function login(data: LoginInfo): Promise<Code> {
   return request(`${url}/login`, {
     method: 'POST',
-    data
+    data,
   });
 }
 
@@ -98,12 +171,12 @@ export async function login(data: LoginInfo): Promise<any> {
  * @export
  * @returns {Promise<any>}
  */
-export async function logout(): Promise<any> {
+export async function logout(): Promise<Code> {
   const token = localStorage.getItem('token') || '';
   return request(`${url}/logout`, {
     headers: {
-      token
-    }
+      token,
+    },
   });
 }
 
@@ -113,14 +186,14 @@ export async function logout(): Promise<any> {
  * @param {RegisterInfo} data
  * @returns {Promise<any>}
  */
-export async function changePsw(data: RegisterInfo): Promise<any> {
+export async function changePsw(data: RegisterInfo): Promise<Code> {
   const token = localStorage.getItem('token') || '';
   return request(`${url}/changePsw`, {
     method: 'POST',
     data,
     headers: {
-      token
-    }
+      token,
+    },
   });
 }
 
@@ -130,14 +203,14 @@ export async function changePsw(data: RegisterInfo): Promise<any> {
  * @param {PageInfo} data
  * @returns {Promise<any>}
  */
-export async function getFeedback(data: PageInfo): Promise<any> {
+export async function getFeedback(data: PageInfo): Promise<Code> {
   const token = localStorage.getItem('token') || '';
   return request(`${url}/feedback/getFeedback`, {
     method: 'POST',
     data,
     headers: {
-      token
-    }
+      token,
+    },
   });
 }
 
@@ -147,14 +220,14 @@ export async function getFeedback(data: PageInfo): Promise<any> {
  * @param {PageInfo} data
  * @returns {Promise<any>}
  */
-export async function getOrder(data: PageInfo): Promise<any> {
+export async function getOrder(data: PageInfo): Promise<Code> {
   const token = localStorage.getItem('token') || '';
   return request(`${url}/order/getOrder`, {
     method: 'POST',
     data,
     headers: {
-      token
-    }
+      token,
+    },
   });
 }
 
@@ -164,14 +237,14 @@ export async function getOrder(data: PageInfo): Promise<any> {
  * @param {{orderId: string}} data
  * @returns {Promise<any>}
  */
-export async function updateStatue(data: {orderId: string}): Promise<any> {
+export async function updateStatue(data: { orderId: string }): Promise<Code> {
   const token = localStorage.getItem('token') || '';
   return request(`${url}/order/updateStatue`, {
     method: 'POST',
     data,
     headers: {
-      token
-    }
+      token,
+    },
   });
 }
 

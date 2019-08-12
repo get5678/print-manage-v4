@@ -168,7 +168,7 @@ export default {
               path: '/types',
               icon: 'table',
               name: 'types',
-              component: './types/basic-list',
+              component: './types/table-list',
               authority: ['admin'],
             },
             {
@@ -361,7 +361,7 @@ export default {
         resourcePath: string;
       },
       _: string,
-      localName: string
+      localName: string,
     ) => {
       if (
         context.resourcePath.includes('node_modules') ||
