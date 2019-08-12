@@ -109,10 +109,6 @@ class TableList extends Component<TableListProps, TableListState> {
       dataIndex: 'phoneNum'
     },
     {
-      title: '我也不知道这啥意思',
-      dataIndex: 'payType',
-    },
-    {
       title: '操作',
       render: (text, record) => (
         <Fragment>

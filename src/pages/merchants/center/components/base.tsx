@@ -41,6 +41,7 @@ const AvatarView = ({ avatar, getFieldDecorator, handleChange }: { avatar: strin
     <FormItem>
       {getFieldDecorator('picture')(
         <Upload
+          action=''
           beforeUpload={beforeUpload}
           showUploadList={false}
           onChange={handleChange}

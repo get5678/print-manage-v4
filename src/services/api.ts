@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 // import { http } from '@/utils/globalRquest';
 const url = 'https://pin.varbee.com/cloudprint/manager';
+// const url = '/cloudprint';
 
 interface RegisterInfo {
   phoneNum: string;
