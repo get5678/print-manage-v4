@@ -1,11 +1,11 @@
-import { Icon, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
 import { ConnectProps, ConnectState } from '@/models/connect';
 import Avatar from './AvatarDropdown';
-import HeaderSearch from '../HeaderSearch';
-import SelectLang from '../SelectLang';
+// import HeaderSearch from '../HeaderSearch';
+// import SelectLang from '../SelectLang';
 import styles from './index.less';
 // import NoticeIconView from './NoticeIconView';
 export type SiderTheme = 'light' | 'dark';
@@ -24,7 +24,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 
   return (
     <div className={className}>
-      <HeaderSearch
+      {/* <HeaderSearch
         className={`${styles.action} ${styles.search}`}
         placeholder={formatMessage({
           id: 'component.globalHeader.search',
@@ -46,24 +46,24 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
         onPressEnter={value => {
           console.log('enter', value);
         }}
-      />
+      /> */}
       <Tooltip
         title={formatMessage({
           id: 'component.globalHeader.help',
         })}
       >
-        <a
+        {/* <a
           target="_blank"
           href="https://pro.ant.design/docs/getting-started"
           rel="noopener noreferrer"
           className={styles.action}
         >
           <Icon type="question-circle-o" />
-        </a>
+        </a> */}
       </Tooltip>
       {/* <NoticeIconView /> */}
       <Avatar menu />
-      <SelectLang className={styles.action} />
+      {/* <SelectLang className={styles.action} /> */}
     </div>
   );
 };

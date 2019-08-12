@@ -15,6 +15,14 @@ export interface GlobalHeaderRightProps extends ConnectProps {
   menu?: boolean;
 }
 
+export interface StateType {
+  status?: 'ok' | 'error';
+  type?: string;
+  currentAuthority?: 'guest' | 'admin';
+  code?: number;
+  msg?: string;
+}
+
 class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
   onMenuClick = (event: ClickParam) => {
     const { key } = event;
@@ -23,34 +31,39 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       const { dispatch } = this.props;
       if (dispatch) {
         dispatch({
-          type: 'login/logout',
+          type: 'userLogin/logout',
         });
       }
 
       return;
     }
-    router.push(`/account/${key}`);
+    // router.push(`/account/${key}`);
+    router.push(`/merchants`);
   };
 
   render(): React.ReactNode {
-    const { currentUser = {}, menu } = this.props;
-    if (!menu) {
+    const { currentUser, menu } = this.props;
+    if (!menu && currentUser) {
       return (
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-          <span className={styles.name}>{currentUser.name}</span>
+          <Avatar size="small" className={styles.avatar} src={currentUser.shopAvatar} alt="avatar" />
+          <span className={styles.name}>{currentUser.shopName}</span>
         </span>
       );
     }
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
+        {/* <Menu.Item key="center">
+          <Icon type="user" />
+          <FormattedMessage id="menu.account.center" defaultMessage="account center" />
+        </Menu.Item> */}
+        {/* <Menu.Item key="settings">
+          <Icon type="setting" />
+          <FormattedMessage id="menu.account.settings" defaultMessage="account settings" />
+        </Menu.Item> */}
         <Menu.Item key="center">
           <Icon type="user" />
           <FormattedMessage id="menu.account.center" defaultMessage="account center" />
-        </Menu.Item>
-        <Menu.Item key="settings">
-          <Icon type="setting" />
-          <FormattedMessage id="menu.account.settings" defaultMessage="account settings" />
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key="logout">
@@ -60,11 +73,11 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       </Menu>
     );
 
-    return currentUser && currentUser.name ? (
+    return currentUser && currentUser.shopName ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-          <span className={styles.name}>{currentUser.name}</span>
+          <Avatar size="small" className={styles.avatar} src={currentUser.shopAvatar} alt="avatar" />
+          <span className={styles.name}>{currentUser.shopName}</span>
         </span>
       </HeaderDropdown>
     ) : (
@@ -72,6 +85,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
     );
   }
 }
-export default connect(({ user }: ConnectState) => ({
+export default connect(({ user }: ConnectState, { userLogin }: { userLogin: StateType}) => ({
   currentUser: user.currentUser,
+  userLogin
 }))(AvatarDropdown);

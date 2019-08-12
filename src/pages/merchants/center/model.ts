@@ -15,7 +15,7 @@ export interface Good {
   price: {
     printType: string;
     printPrice: number;
-    combinationId: number
+    printRelId: number
   }
 }
 
@@ -52,10 +52,12 @@ const Model: ModelType = {
   effects: {
     *shopInfo(_, { call, put }) {
       const response = yield call(shopInfo);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response.data
-      })
+      if (response.code === 1) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response.data
+        })
+      }
     },
     *editInfo({ payload }, { call }) {
       const { formData, message, dispatch } = payload;

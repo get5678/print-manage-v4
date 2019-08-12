@@ -11,7 +11,7 @@ import { stringify } from 'qs';
 export interface StateType {
   status?: 'ok' | 'error';
   type?: string;
-  currentAuthority?: 'user' | 'guest' | 'admin';
+  currentAuthority?: 'guest' | 'admin';
   code?: number;
   msg?: string;
 }
@@ -56,7 +56,7 @@ const Model: ModelType = {
         type: 'changeLoginStatus',
         payload: response,
       });
-
+      reloadAuthorized();
       // Login successfully
       if (response.code && response.code === 1) {
         const urlParams = new URL(window.location.href);
@@ -86,6 +86,7 @@ const Model: ModelType = {
           currentAuthority: 'guest',
         },
       });
+      localStorage.removeItem('token');
       reloadAuthorized();
       const { redirect } = getPageQuery();
       // redirect

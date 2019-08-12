@@ -85,6 +85,7 @@ export default {
     {
       path: '/',
       component: '../layouts/BlankLayout',
+      authority: ['admin', 'guest'],
       routes: [
         {
           path: '/user',
@@ -118,13 +119,14 @@ export default {
           path: '/',
           component: '../layouts/BasicLayout',
           Routes: ['src/pages/Authorized'],
-          authority: ['admin', 'user'],
+          authority: ['admin'],
           routes: [
             {
               path: '/',
               icon: 'smile',
               name: 'welcome',
               component: './Welcome',
+              authority: ['admin'],
             },
             // {
             //   path: '/dashboard',
@@ -152,31 +154,36 @@ export default {
               path: '/order',
               icon: 'table',
               name: 'order',
-              component: './order/table-list'
+              component: './order/table-list',
+              authority: ['admin'],
             },
             {
               path: '/refund',
               icon: 'table',
               name: 'refund',
-              component: './refund/table-list'
+              component: './refund/table-list',
+              authority: ['admin'],
             },
             {
               path: '/types',
               icon: 'table',
               name: 'types',
-              component: './types/basic-list'
+              component: './types/basic-list',
+              authority: ['admin'],
             },
             {
               path: '/feedback',
               icon: 'table',
               name: 'feedback',
-              component: './feedback/table-list'
+              component: './feedback/table-list',
+              authority: ['admin'],
             },
             {
               path: '/merchants',
               icon: 'user',
               name: 'account',
               component: './merchants/center',
+              authority: ['admin'],
             },
             // {
             //   path: '/form',

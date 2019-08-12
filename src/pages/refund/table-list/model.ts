@@ -43,7 +43,6 @@ const Model: ModelType = {
   effects: {
     *getOrder({ payload }, { call, put }) {
       const response = yield call(refund, payload);
-      console.log(response)
       if (response.code === 1) {
         yield put({
           type: 'list',

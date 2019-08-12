@@ -90,7 +90,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
   useEffect(() => {
     if (dispatch) {
       dispatch({
-        type: 'user/fetchCurrent',
+        type: 'user/shopInfo',
       });
       dispatch({
         type: 'settings/getSetting',

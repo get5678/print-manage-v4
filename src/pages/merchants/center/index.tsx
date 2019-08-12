@@ -124,7 +124,7 @@ class Center extends PureComponent<
                       list && list.length > 0 ? list.map(
                         item => {
                           return (
-                          <p key={item.price.combinationId}>
+                          <p key={item.price.printRelId}>
                             <span>{item.price.printType}</span>
                             <span>{item.price.printPrice} 元/张</span>
                           </p>);

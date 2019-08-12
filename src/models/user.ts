@@ -1,35 +1,42 @@
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
 
-import { queryCurrent, query as queryUsers } from '@/services/user';
+// import { queryCurrent, query as queryUsers } from '@/services/user';
+import { shopInfo } from '@/services/api'
 
 export interface CurrentUser {
-  avatar?: string;
-  name?: string;
-  title?: string;
-  group?: string;
-  signature?: string;
-  tags?: {
-    key: string;
-    label: string;
-  }[];
-  unreadCount?: number;
+  // avatar?: string;
+  // name?: string;
+  // title?: string;
+  // group?: string;
+  // signature?: string;
+  // tags?: {
+  //   key: string;
+  //   label: string;
+  // }[];
+  // unreadCount?: number;
+  id: string | number;
+  shopName?: string;
+  shopAvatar?: string;
+  shopAddress?: string;
+  shopPhone: string;
 }
 
 export interface UserModelState {
-  currentUser?: CurrentUser;
+  currentUser?: Partial<CurrentUser>;
 }
 
 export interface UserModelType {
   namespace: 'user';
   state: UserModelState;
   effects: {
-    fetch: Effect;
-    fetchCurrent: Effect;
+    shopInfo: Effect;
+    // fetch: Effect;
+    // fetchCurrent: Effect;
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState>;
-    changeNotifyCount: Reducer<UserModelState>;
+    // changeNotifyCount: Reducer<UserModelState>;
   };
 }
 
@@ -37,48 +44,63 @@ const UserModel: UserModelType = {
   namespace: 'user',
 
   state: {
-    currentUser: {},
+    currentUser: {}
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(queryUsers);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+    *shopInfo(_, { call, put }) {
+      const response = yield call(shopInfo);
+      if (response.code === 1) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response.data
+        })
+      }
     },
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
-    },
+    // *fetch(_, { call, put }) {
+    //   const response = yield call(queryUsers);
+    //   yield put({
+    //     type: 'save',
+    //     payload: response,
+    //   });
+    // },
+    // *fetchCurrent(_, { call, put }) {
+    //   const response = yield call(queryCurrent);
+    //   yield put({
+    //     type: 'saveCurrentUser',
+    //     payload: response,
+    //   });
+    // },
   },
 
   reducers: {
-    saveCurrentUser(state, action) {
+    saveCurrentUser(state, { payload }) {
+      let good = [];
+      if (payload.shopPrice) {
+        good = payload.shopPrice;
+        delete payload.shopPrice;
+      }
       return {
         ...state,
-        currentUser: action.payload || {},
+        currentUser: payload || {},
+        list: good
       };
-    },
-    changeNotifyCount(
-      state = {
-        currentUser: {},
-      },
-      action,
-    ) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
-        },
-      };
-    },
+    }
+    // changeNotifyCount(
+    //   state = {
+    //     currentUser: {},
+    //   },
+    //   action,
+    // ) {
+    //   return {
+    //     ...state,
+    //     currentUser: {
+    //       ...state.currentUser,
+    //       notifyCount: action.payload.totalCount,
+    //       unreadCount: action.payload.unreadCount,
+    //     },
+    //   };
+    // },
   },
 };
 
