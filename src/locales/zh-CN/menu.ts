@@ -49,5 +49,6 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
   'menu.feedback': '用户反馈',
   'menu.order': '订单管理',
-  'menu.types': '商品管理'
+  'menu.types': '商品管理',
+  'menu.refund': '退款管理'
 };

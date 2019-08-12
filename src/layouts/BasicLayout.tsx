@@ -43,17 +43,17 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
 
 const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
   const myLinks = [{
-    key: 'Ant Design Pro',
-    title: 'Ant Design Pro',
-    href: 'https://pro.ant.design',
-    blankTarget: true
+    key: 'index',
+    title: '首页',
+    href: '/',
+    blankTarget: false
   }];
 
   return (
     <>
     <DefaultFooter 
     links={myLinks}
-    copyright='勤奋峰前端部门出品'/>
+    copyright='勤奋峰科技'/>
     </>
   )
   // if (!isAntDesignPro()) {

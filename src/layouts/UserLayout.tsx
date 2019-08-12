@@ -5,7 +5,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
 
-import SelectLang from '@/components/SelectLang';
+// import SelectLang from '@/components/SelectLang';
 import { ConnectProps, ConnectState } from '@/models/connect';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
@@ -15,10 +15,10 @@ export interface UserLayoutProps extends ConnectProps {
 }
 
 const myLinks = [{
-  key: 'Ant Design Pro',
-  title: 'Ant Design Pro',
-  href: 'https://pro.ant.design',
-  blankTarget: true
+  key: 'index',
+  title: '首页',
+  href: '/',
+  blankTarget: false
 }];
 
 const UserLayout: React.SFC<UserLayoutProps> = props => {
@@ -47,7 +47,7 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
     >
       <div className={styles.container}>
         <div className={styles.lang}>
-          <SelectLang />
+          {/* <SelectLang /> */}
         </div>
         <div className={styles.content}>
           <div className={styles.top}>
@@ -63,7 +63,7 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
         </div>
         <DefaultFooter 
         links={myLinks}
-        copyright='勤奋峰前端组出品'/>
+        copyright='勤奋峰科技'/>
       </div>
     </DocumentTitle>
   );

@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 const url = 'https://pin.varbee.com/cloudprint/manager'
-// const url = 'cloudprint'
+// const url = '/cloudprint'
 
 interface RegisterInfo {
   phoneNum: string;
@@ -17,6 +17,7 @@ interface LoginInfo {
 interface PageInfo {
   page: number;
   count: number;
+  orderStatus: string[] | number[]
 }
 
 /**
@@ -168,6 +169,53 @@ export async function updateStatue(data: {orderId: string}): Promise<any> {
   return request(`${url}/order/updateStatue`, {
     method: 'POST',
     data,
+    headers: {
+      token
+    }
+  });
+}
+
+/**
+ * @description 获取退款信息接口
+ * @export
+ * @param {{page: number, size: number, status: number[]}} data
+ * @returns {Promise<any>}
+ */
+export async function refund(data: {page: number, size: number, status: number[] | string[]}): Promise<any> {
+  const token = localStorage.getItem('token') || '';
+  return request(`${url}/order/refund`, {
+    method: 'POST',
+    data,
+    headers: {
+      token
+    }
+  });
+}
+
+/**
+ * @description 商家拒绝退款
+ * @export
+ * @param {number} refundId
+ * @returns {Promise<any>}
+ */
+export async function refuse(refundId: number): Promise<any> {
+  const token = localStorage.getItem('token') || '';
+  return request(`${url}/order/refuse?refundId=${refundId}`, {
+    headers: {
+      token
+    }
+  });
+}
+
+/**
+ * @description 商家确认退款
+ * @export
+ * @param {number} refundId
+ * @returns {Promise<any>}
+ */
+export async function allow(refundId: number): Promise<any> {
+  const token = localStorage.getItem('token') || '';
+  return request(`${url}/order/allow?refundId=${refundId}`, {
     headers: {
       token
     }

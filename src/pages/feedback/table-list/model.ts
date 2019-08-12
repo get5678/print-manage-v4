@@ -25,6 +25,7 @@ export interface ModelType {
   state: StateType;
   effects: {
     list: Effect;
+    updateStatue: Effect;
   };
   reducers: {
     save: Reducer<StateType>;
@@ -43,6 +44,15 @@ const Model: ModelType = {
 
   effects: {
     *list({ payload }, { call, put}) {
+      const response = yield call(getFeedback, payload);
+      if (response.code === 1) {
+        yield put({
+          type: 'save',
+          payload: response.data,
+        });
+      }
+    },
+    *updateStatue({ payload }, { call, put}) {
       const response = yield call(getFeedback, payload);
       if (response.code === 1) {
         yield put({

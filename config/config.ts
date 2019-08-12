@@ -155,6 +155,12 @@ export default {
               component: './order/table-list'
             },
             {
+              path: '/refund',
+              icon: 'table',
+              name: 'refund',
+              component: './refund/table-list'
+            },
+            {
               path: '/types',
               icon: 'table',
               name: 'types',

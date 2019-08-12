@@ -3,6 +3,7 @@ import {
   Card,
   Form,
   message,
+  Divider
 } from 'antd';
 import React, { Component, Fragment } from 'react';
 
@@ -12,18 +13,18 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import { StateType } from './model';
 import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
-import { TableListItem, TableListPagination, TableListParams } from './data.d';
+import { TableListItem, TableListPagination, TableListParams } from './data';
 
 import styles from './style.less';
 
 type IStatusMapType = 'default' | 'processing' | 'success' | 'error';
-const statusMap = ['default', 'success', 'processing', 'error', 'processing', 'processing', 'default', 'error', 'default', 'default'];
-const status = ['已完成', '打印完成待收货', '正在打印', '打印失败', '待支付', '申请中', '退款成功', '商家拒绝退款', '用户取消退款', '已过期'];
+const statusMap = ['processing', 'success', 'error', 'default'];
+const status = ['正在申请', '已同意', '已拒绝', '用户取消'];
 
 interface TableListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
   loading: boolean;
-  order: StateType;
+  refund: StateType;
 }
 
 interface TableListState {
@@ -33,18 +34,18 @@ interface TableListState {
 /* eslint react/no-multi-comp:0 */
 @connect(
   ({
-    order,
+    refund,
     loading,
   }: {
-    order: StateType;
+    refund: StateType;
     loading: {
       models: {
         [key: string]: boolean;
       };
     };
   }) => ({
-    order,
-    loading: loading.models.order,
+    refund,
+    loading: loading.models.refund,
   }),
 )
 class TableList extends Component<TableListProps, TableListState> {
@@ -54,33 +55,25 @@ class TableList extends Component<TableListProps, TableListState> {
 
   columns: StandardTableColumnProps[] = [
     {
+      title: '订单号',
+      dataIndex: 'orderId'
+    },
+    {
       title: '文件名',
       dataIndex: 'documentName',
     },
     {
-      title: '纸张大小',
-      align: 'right',
-      dataIndex: 'printSize',
-    },
-    {
-      title: '单双面',
-      align: 'right',
-      dataIndex: 'printDirection'
-    },
-    {
-      title: '色彩',
-      align: 'right',
-      dataIndex: 'printType'
-    },
-    {
-      title: '份数',
-      align: 'right',
-      dataIndex: 'printNum'
+      title: '类型',
+      dataIndex: 'combine'
     },
     {
       title: '价格(RMB)',
       align: 'right',
-      dataIndex: 'payment'
+      dataIndex: 'refund_fee'
+    },
+    {
+      title: '取货码',
+      dataIndex: 'reviceCode'
     },
     {
       title: '状态',
@@ -101,31 +94,7 @@ class TableList extends Component<TableListProps, TableListState> {
         {
           text: status[3],
           value: '3',
-        },
-        {
-          text: status[4],
-          value: '4',
-        },
-        {
-          text: status[5],
-          value: '5',
-        },
-        {
-          text: status[6],
-          value: '6',
-        },
-        {
-          text: status[7],
-          value: '7',
-        },
-        {
-          text: status[8],
-          value: '8',
-        },
-        {
-          text: status[9],
-          value: '9',
-        },
+        }
       ],
       render(val: IStatusMapType) {
         return <Badge status={statusMap[val]} text={status[val]} />;
@@ -133,24 +102,23 @@ class TableList extends Component<TableListProps, TableListState> {
     },
     {
       title: '创建时间',
-      dataIndex: 'gmtCreate'
+      dataIndex: 'createDate'
     },
     {
       title: '电话',
       dataIndex: 'phoneNum'
     },
     {
-      title: '取货码',
-      dataIndex: 'receivingCode',
-      align: 'right',
+      title: '我也不知道这啥意思',
+      dataIndex: 'payType',
     },
     {
       title: '操作',
-      render: (record) => (
+      render: (text, record) => (
         <Fragment>
-          <a onClick={this.handleConfirm.bind(this, record.id, record.orderStatus)}>确认收货</a>
-          {/* <Divider type="vertical" />
-          <a href="">订阅警报</a> */}
+          <a onClick={this.handleConfirm.bind(this, record.orderStatus, record.refundOrderId, record.orderId)}>确认退款</a>
+          <Divider type="vertical" />
+          <a onClick={this.handleRefuse.bind(this, record.orderStatus, record.refundOrderId, record.orderId)}>取消退款</a>
         </Fragment>
       ),
     },
@@ -159,31 +127,59 @@ class TableList extends Component<TableListProps, TableListState> {
   componentDidMount() {
     const { dispatch } = this.props;
     // dispatch({
-    //   type: 'order/fetch',
-    // });
+    //   type: 'refund/fetch',
+    //   payload: {
+    //     page: 1,
+    //     size: 10
+    //   }
+    // })
     dispatch({
-      type: 'order/getOrder',
+      type: 'refund/getOrder',
       payload: {
         page: 1,
-        count: 10
+        size: 10
       }
     })
   }
 
   /**
-   * @description 处理收货
+   * @description 确认退款
    * @memberof TableList
    */
-  handleConfirm = (orderId: number, orderStatus: number) => {
+  handleConfirm = (orderStatus: number, refundOrderId: number | string, orderId: number | string) => {
     const { dispatch } = this.props;
     
-    if (orderStatus !== 1) {
-      message.error('确认收货失败，不是可以确认收货的状态');
+    if (orderStatus !== 0) {
+      message.error('确认退款失败，不是可以确认的状态');
       message.error('目前状态为' + status[orderStatus]);
     } else {
       dispatch({
-        type: 'order/updateStatue',
+        type: 'refund/confirmOrder',
         payload: {
+          refundOrderId,
+          orderId,
+          message,
+          dispatch
+        }
+      })
+    }
+  }
+
+  /**
+   * @description 取消退款
+   * @memberof TableList
+   */
+  handleRefuse = (orderStatus: number, refundOrderId: number | string, orderId: number | string) => {
+    const { dispatch } = this.props;
+
+    if (orderStatus !== 0) {
+      message.error('确认退款失败，不是可以确认的状态');
+      message.error('目前状态为' + status[orderStatus]);
+    } else {
+      dispatch({
+        type: 'refund/confirmOrder',
+        payload: {
+          refundOrderId,
           orderId,
           message,
           dispatch
@@ -206,12 +202,12 @@ class TableList extends Component<TableListProps, TableListState> {
 
     const params: Partial<TableListParams> = {
       page: pagination.current,
-      count: pagination.pageSize,
-      orderStatus: (orderStatus && orderStatus.length > 0) ? orderStatus : undefined
+      size: pagination.pageSize,
+      status: (orderStatus && orderStatus.length > 0) ? orderStatus : undefined
     };
 
     dispatch({
-      type: 'order/getOrder',
+      type: 'refund/getOrder',
       payload: params,
     });
   };
@@ -224,7 +220,7 @@ class TableList extends Component<TableListProps, TableListState> {
 
   render() {
     const {
-      order: { data },
+      refund: { data },
       loading,
     } = this.props;
 
@@ -240,7 +236,7 @@ class TableList extends Component<TableListProps, TableListState> {
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              rowKey='id'
+              rowKey='refundOrderId'
             />
           </div>
         </Card>
