@@ -6,8 +6,8 @@
 import ProLayout, {
   MenuDataItem,
   BasicLayoutProps as ProLayoutProps,
-  Settings,
-  SettingDrawer,
+  // Settings,
+  // SettingDrawer,
   DefaultFooter
 } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
@@ -23,7 +23,7 @@ export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
   };
-  settings: Settings;
+  // settings: Settings;
   dispatch: Dispatch;
 }
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
@@ -82,7 +82,7 @@ const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
 };
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
-  const { dispatch, children, settings } = props;
+  const { dispatch, children } = props;
   /**
    * constructor
    */
@@ -92,9 +92,9 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       dispatch({
         type: 'user/shopInfo',
       });
-      dispatch({
-        type: 'settings/getSetting',
-      });
+      // dispatch({
+      //   type: 'settings/getSetting',
+      // });
     }
   }, []);
   /**
@@ -143,11 +143,11 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         formatMessage={formatMessage}
         rightContentRender={rightProps => <RightContent {...rightProps} />}
         {...props}
-        {...settings}
+        // {...settings}
       >
         {children}
       </ProLayout>
-      <SettingDrawer
+      {/* <SettingDrawer
         settings={settings}
         onSettingChange={config =>
           dispatch({
@@ -155,12 +155,12 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
             payload: config,
           })
         }
-      />
+      /> */}
     </>
   );
 };
 
-export default connect(({ global, settings }: ConnectState) => ({
+export default connect(({ global }: ConnectState) => ({
   collapsed: global.collapsed,
-  settings,
+  // settings,
 }))(BasicLayout);
