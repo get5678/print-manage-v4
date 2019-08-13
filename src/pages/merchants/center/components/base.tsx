@@ -41,7 +41,7 @@ const AvatarView = ({ avatar, getFieldDecorator, handleChange }: { avatar: strin
     <FormItem>
       {getFieldDecorator('picture')(
         <Upload
-          action=''
+          action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
           beforeUpload={beforeUpload}
           showUploadList={false}
           onChange={handleChange}
