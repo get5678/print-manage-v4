@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 // import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
+import JsEncrypt from 'jsencrypt'
 import Link from 'umi/link';
 import { connect } from 'dva';
 import { StateType } from './model';
@@ -60,6 +61,18 @@ class Login extends Component<
   //   });
   // };
 
+  /**
+   * @description RSA加密
+   * @memberof Login
+   */
+  RSAencrypt = (psw: string) => {
+    const jse = new JsEncrypt();
+    jse.setPublicKey(`
+    MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCwxZwvV2JrICiSqokCqQnzy3hyczFbQ0rzVLwnmpk9/ydUpZU6PlDrLf83IVEA4htGytxFeHIYIxgZ5HRlEESacoJBHspRVajY/rIxenF8xJsOy7+NFZLGvMCTnYVchts+YUFTnm/BB16DDex7mJ3ZtiBJBYbdFQpC+6IkDAnueQIDAQAB
+    `);
+    return jse.encrypt(psw);
+  }
+
   handleSubmit = (err: any, values: FormDataType) => {
     if (!err) {
       const { dispatch } = this.props;
@@ -68,7 +81,7 @@ class Login extends Component<
         type: 'userLogin/login',
         payload: {
           phoneNum: userName,
-          psw: password
+          psw: this.RSAencrypt(password)
         },
       });
     }
@@ -119,6 +132,10 @@ class Login extends Component<
                 {
                   required: true,
                   message: '请输入密码',
+                },
+                {
+                  pattern: /^.{6,16}$/,
+                  message: '密码应为6至16位',
                 },
               ]}
               onPressEnter={e => {

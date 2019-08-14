@@ -55,7 +55,7 @@ const Model: ModelType = {
     },
     *register({ payload }, { call, put }) {
       const response = yield call(register, payload);
-      if (response.code !== 1) {
+      if (response && response.code !== 1) {
         message.error(response.msg);
       }
       yield put({

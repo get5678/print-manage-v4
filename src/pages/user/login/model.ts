@@ -43,14 +43,16 @@ const Model: ModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(login, payload);
-      if (response.code && response.code === 1) {
+      if (response && response.code === 1) {
         message.success('登陆成功!');
         localStorage.setItem('token', response.data);
         response.currentAuthority = 'admin';
-      } else {
+      } else if (response && response.msg) {
         message.error(response.msg);
         response.status = 'error';
         response.currentAuthority = 'guest';
+      } else {
+        message.error('连接服务器失败');
       }
       yield put({
         type: 'changeLoginStatus',
@@ -58,7 +60,7 @@ const Model: ModelType = {
       });
       reloadAuthorized();
       // Login successfully
-      if (response.code && response.code === 1) {
+      if (response && response.code === 1) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };
@@ -105,10 +107,14 @@ const Model: ModelType = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
+      if (payload && payload.currentAuthority) {
+        setAuthority(payload.currentAuthority);
+      } else {
+        setAuthority('guest');
+      }
       return {
         ...state,
-        status: payload.status,
+        status: payload.status || 'error',
         code: payload.code || -1,
         type: payload.type,
         msg: payload.msg,

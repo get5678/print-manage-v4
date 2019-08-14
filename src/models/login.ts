@@ -3,6 +3,8 @@ import { parse, stringify } from 'qs';
 
 import { EffectsCommandMap } from 'dva';
 import { routerRedux } from 'dva/router';
+import { logout } from '@/services/api'
+import { reloadAuthorized } from '@/utils/Authorized'
 
 export function getPageQuery(): {
   [key: string]: string;
@@ -34,7 +36,16 @@ const Model: ModelType = {
   },
 
   effects: {
-    *logout(_, { put }) {
+    *logout(_, { call, put }) {
+      yield call(logout);
+      yield put({
+        type: 'changeLoginStatus',
+        payload: {
+          status: 'error',
+          currentAuthority: 'guest',
+        },
+      });
+      reloadAuthorized();
       const { redirect } = getPageQuery();
       // redirect
       if (window.location.pathname !== '/user/login' && !redirect) {

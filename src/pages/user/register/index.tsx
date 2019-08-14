@@ -6,6 +6,7 @@ import { FormComponentProps } from 'antd/es/form';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import router from 'umi/router';
+import JsEncrypt from 'jsencrypt'
 
 import { StateType } from './model';
 import styles from './style.less';
@@ -152,6 +153,18 @@ class Register extends Component<
     return 'poor';
   };
 
+  /**
+   * @description RSA加密
+   * @memberof Register
+   */
+  RSAencrypt = (psw: string) => {
+    const jse = new JsEncrypt();
+    jse.setPublicKey(`
+    MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCwxZwvV2JrICiSqokCqQnzy3hyczFbQ0rzVLwnmpk9/ydUpZU6PlDrLf83IVEA4htGytxFeHIYIxgZ5HRlEESacoJBHspRVajY/rIxenF8xJsOy7+NFZLGvMCTnYVchts+YUFTnm/BB16DDex7mJ3ZtiBJBYbdFQpC+6IkDAnueQIDAQAB
+    `);
+    return jse.encrypt(psw);
+  }
+
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const { form, dispatch } = this.props;
@@ -162,7 +175,7 @@ class Register extends Component<
           type: 'userRegister/register',
           payload: {
             phoneNum: mobile,
-            psw: password,
+            psw: this.RSAencrypt(password),
             authCode: captcha
           },
         });
