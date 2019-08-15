@@ -101,6 +101,11 @@ export default {
               component: './user/login',
             },
             {
+              name: 'forget',
+              path: '/user/forget',
+              component: './user/forget',
+            },
+            {
               name: 'registerResult',
               path: '/user/register-result',
               component: './user/register-result',

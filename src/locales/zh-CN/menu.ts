@@ -5,6 +5,7 @@ export default {
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.registerResult': '注册结果',
+  'menu.forget': '忘记密码',
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': '分析页',
   'menu.dashboard.monitor': '监控页',

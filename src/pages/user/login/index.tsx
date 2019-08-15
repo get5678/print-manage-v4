@@ -145,7 +145,7 @@ class Login extends Component<
             />
           </Tab>
           <div style={{ textAlign: 'right' }}>
-            <Link to="/user/register">
+            <Link to="/user/forget">
               <FormattedMessage id="user-login.login.forgot-password" />
             </Link>
           </div>
