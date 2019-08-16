@@ -51,7 +51,9 @@ const Model: ModelType = {
     },
     *updateStatue( { payload }, { call }) {
       const { orderId, message, dispatch } = payload;
-      const response = yield call(updateStatue, orderId);
+      const response = yield call(updateStatue, {
+        orderId: orderId
+      });
       if (response && response.code === 1) {
         message.success(`订单号${orderId}收货成功`);
       } else {

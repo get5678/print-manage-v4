@@ -18,7 +18,7 @@ import styles from './style.less';
 
 type IStatusMapType = 'default' | 'processing' | 'success' | 'error';
 const statusMap = ['default', 'success', 'processing', 'error', 'processing', 'processing', 'default', 'error', 'default', 'default'];
-const status = ['已完成', '打印完成待收货', '正在打印', '打印失败', '待支付', '申请中', '退款成功', '商家拒绝退款', '用户取消退款', '已过期'];
+const status = ['已完成', '打印完成待收货', '正在打印', '打印失败', '待支付', '申请退款中', '退款成功', '商家拒绝退款', '用户取消退款', '已过期'];
 
 interface TableListProps extends FormComponentProps {
   dispatch: Dispatch<any>;

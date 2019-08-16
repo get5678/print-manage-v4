@@ -18,8 +18,8 @@ import { TableListItem, TableListPagination, TableListParams } from './data';
 import styles from './style.less';
 
 type IStatusMapType = 'default' | 'processing' | 'success' | 'error';
-const statusMap = ['processing', 'success', 'error', 'default'];
-const status = ['正在申请', '已同意', '已拒绝', '用户取消'];
+const statusMap = ['default', 'success', 'processing', 'error', 'processing', 'processing', 'default', 'error', 'default', 'default'];
+const status = ['已完成', '打印完成待收货', '正在打印', '打印失败', '待支付', '申请退款中', '退款成功', '商家拒绝退款', '用户取消退款', '已过期'];
 
 interface TableListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
@@ -94,7 +94,31 @@ class TableList extends Component<TableListProps, TableListState> {
         {
           text: status[3],
           value: '3',
-        }
+        },
+        {
+          text: status[4],
+          value: '4',
+        },
+        {
+          text: status[5],
+          value: '5',
+        },
+        {
+          text: status[6],
+          value: '6',
+        },
+        {
+          text: status[7],
+          value: '7',
+        },
+        {
+          text: status[8],
+          value: '8',
+        },
+        {
+          text: status[9],
+          value: '9',
+        },
       ],
       render(val: IStatusMapType) {
         return <Badge status={statusMap[val]} text={status[val]} />;
@@ -145,7 +169,7 @@ class TableList extends Component<TableListProps, TableListState> {
   handleConfirm = (orderStatus: number, refundOrderId: number | string, orderId: number | string) => {
     const { dispatch } = this.props;
     
-    if (orderStatus !== 0) {
+    if (orderStatus !== 5) {
       message.error('确认退款失败，不是可以确认的状态');
       message.error('目前状态为' + status[orderStatus]);
     } else {
@@ -168,7 +192,7 @@ class TableList extends Component<TableListProps, TableListState> {
   handleRefuse = (orderStatus: number, refundOrderId: number | string, orderId: number | string) => {
     const { dispatch } = this.props;
 
-    if (orderStatus !== 0) {
+    if (orderStatus !== 5) {
       message.error('确认退款失败，不是可以确认的状态');
       message.error('目前状态为' + status[orderStatus]);
     } else {

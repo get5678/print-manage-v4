@@ -241,7 +241,8 @@ export async function getOrder(data: PageInfo): Promise<Code> {
  */
 export async function updateStatue(data: { orderId: string }): Promise<Code> {
   const token = localStorage.getItem('token') || '';
-  return request(`${url}/order/updateStatue`, {
+  const { orderId } = data;
+  return request(`${url}/order/updateStatue?orderId=${orderId}`, {
     method: 'POST',
     data,
     headers: {
