@@ -1,8 +1,8 @@
 import request from '@/utils/request';
 // import { http } from '@/utils/globalRquest';
-const url = 'https://pin.varbee.com/cloudprint/manager';
+// const url = 'https://pin.varbee.com/cloudprint/manager';
 // const url = 'http://min.our16.top/cloudprint/manager'
-// const url = '/cloudprint';
+const url = '/cloudprint';
 
 interface RegisterInfo {
   phoneNum: string;
@@ -130,12 +130,13 @@ export async function deleteCombleInfo(data: DeteleInfo): Promise<Code> {
 /**
  * @description 发送验证码
  * @export
- * @param {string} phoneNum
- * @returns {Promise<any>}
+ * @param {{phoneNum: string, flag: number}} data
+ * @returns {Promise<Code>}
  */
-export async function sendAuthCode(phoneNum: string): Promise<Code> {
+export async function sendAuthCode(data: {phoneNum: string, flag: number}): Promise<Code> {
   const token = localStorage.getItem('token') || '';
-  return request(`${url}/sendAuthCode?phoneNum=${phoneNum}&flag=${1}`, {
+  const { phoneNum, flag } = data;
+  return request(`${url}/sendAuthCode?phoneNum=${phoneNum}&flag=${flag}`, {
     headers: {
       token,
     },

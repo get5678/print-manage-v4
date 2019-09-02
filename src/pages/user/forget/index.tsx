@@ -126,7 +126,10 @@ class Register extends Component<
         const { mobile } = values;
         dispatch({
           type: 'userChangePsw/sendAuthCode',
-          payload: mobile
+          payload: {
+            phoneNum: mobile,
+            flag: 0
+          }
         })
         let count = 59;
         this.setState({ count });

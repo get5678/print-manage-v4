@@ -126,7 +126,10 @@ class Register extends Component<
         const { mobile } = values;
         dispatch({
           type: 'userRegister/sendAuthCode',
-          payload: mobile
+          payload: {
+            phoneNum: mobile,
+            flag: 1
+          }
         })
         let count = 59;
         this.setState({ count });
